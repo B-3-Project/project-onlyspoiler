@@ -29,6 +29,7 @@ export const signup = async (req, res, next) => {
   const { password: _, ...userWithoutPassword } = user.get();
 
   res.status(StatusCodes.OK).json({
+    success: true,
     message: SuccessMessages.SIGNUP_SUCCESS,
     data: userWithoutPassword
   });
