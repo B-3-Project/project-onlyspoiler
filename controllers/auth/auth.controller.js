@@ -1,5 +1,8 @@
 import db from "../../models/index.cjs";
 import { StatusCodes } from "../../constants/statusCodes.constant.js";
+import { ErrorMessages } from "../../constants/errorMessage.constant.js";
+import { SuccessMessages } from "../../constants/successMessage.constant.js";
+import { createError } from "../../utils/errorResponse.js";
 const { Users } = db;
 
 export const signup = async (req, res, next) => {
@@ -12,7 +15,9 @@ export const signup = async (req, res, next) => {
   });
 
   if (existingUser) {
-    return;
+    return next(
+      createError(StatusCodes.CONFLICT, ErrorMessages.ALREADY_REGISTERED)
+    );
   }
 
   const user = await Users.create({
@@ -24,7 +29,7 @@ export const signup = async (req, res, next) => {
   const { password: _, ...userWithoutPassword } = user.get();
 
   res.status(StatusCodes.OK).json({
-    message: "성공",
+    message: SuccessMessages.SIGNUP_SUCCESS,
     data: userWithoutPassword
   });
 };
