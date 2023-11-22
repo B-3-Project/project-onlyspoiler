@@ -6,7 +6,7 @@ const { Users } = db;
 
 const verifyToken = (req, res, next) => {
   try {
-    const authHeader = req.headers.authoriztion;
+    const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return sendUnauthorizedResponse(res, ErrorMessages.MISSING_TOKEN);
     }
