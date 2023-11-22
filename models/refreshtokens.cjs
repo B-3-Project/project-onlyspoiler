@@ -1,21 +1,20 @@
 "use strict";
 const { Model } = require("sequelize");
-const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
-  class Users extends Model {
+  class RefreshTokens extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.hasMany(models.RefreshTokens, {
+      this.belongsTo(models.Users, {
         foreignKey: "user_id",
-        as: "refreshTokens"
+        as: "user"
       });
     }
   }
-  Users.init(
+  RefreshTokens.init(
     {
       id: {
         allowNull: false,
@@ -23,21 +22,17 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      email: {
+      user_id: {
+        allowNull: false,
+        type: DataTypes.INTEGER
+      },
+      token: {
         allowNull: false,
         type: DataTypes.STRING
       },
-      password: {
+      expires_in: {
         allowNull: false,
-        type: DataTypes.STRING
-      },
-      name: {
-        allowNull: false,
-        type: DataTypes.STRING
-      },
-      description: {
-        allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.DATE
       },
       createdAt: {
         allowNull: false,
@@ -52,19 +47,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Users",
-      hooks: {
-        beforeCreate: hashPassword,
-        beforeUpdate: hashPassword
-      }
+      modelName: "RefreshTokens"
     }
   );
-  return Users;
+  return RefreshTokens;
 };
-
-async function hashPassword(user) {
-  if (user.changed("password")) {
-    const salt = await bcrypt.genSalt();
-    user.password = await bcrypt.hash(user.password, salt);
-  }
-}
