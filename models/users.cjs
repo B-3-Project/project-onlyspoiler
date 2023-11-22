@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class Users extends Model {
     /**
@@ -14,18 +15,49 @@ module.exports = (sequelize, DataTypes) => {
   Users.init(
     {
       id: {
-        type: DataTypes.INTEGER, // int 타입으로 설정
-        primaryKey: true, // 주요 키로 설정
-        autoIncrement: true // 자동 증가 설정
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
       },
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      name: DataTypes.STRING
+      email: {
+        allowNull: false,
+        type: DataTypes.STRING
+      },
+      password: {
+        allowNull: false,
+        type: DataTypes.STRING
+      },
+      name: {
+        allowNull: false,
+        type: DataTypes.STRING
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+      }
     },
     {
       sequelize,
-      modelName: "Users"
+      modelName: "Users",
+      hooks: {
+        beforeCreate: hashPassword,
+        beforeUpdate: hashPassword
+      }
     }
   );
   return Users;
 };
+
+async function hashPassword(user) {
+  if (user.changed("password")) {
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(user.password, salt);
+  }
+}
