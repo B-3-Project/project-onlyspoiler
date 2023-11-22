@@ -1,18 +1,21 @@
 import db from "../../models/index.cjs";
-const { Users } = db;
+const { Users, RefreshTokens } = db;
 import { StatusCodes } from "../../constants/statusCodes.constant.js";
 import { ErrorMessages } from "../../constants/errorMessage.constant.js";
 import { SuccessMessages } from "../../constants/successMessage.constant.js";
 import { createError } from "../../utils/errorResponse.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../../utils/token.js";
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
     const user = await handleLogin(email, password);
-    const token = generateToken(user.id);
+
+    await RefreshTokens.destroy({ where: { user_id: user.id } });
+
+    const token = await generateToken(user.id);
 
     return res.status(StatusCodes.OK).json({
       success: true,
@@ -42,12 +45,4 @@ const handleLogin = async (email, password) => {
 
 const comparePassword = async (password, hashedPassword) => {
   return await bcrypt.compare(password, hashedPassword);
-};
-
-const generateToken = userId => {
-  const expiresIn = "12h";
-  const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn
-  });
-  return { accessToken, expiresIn };
 };
