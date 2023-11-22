@@ -9,17 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.Contents.belongsTo(models.Users, {
+        foreignKey: "author_id",
+        targetKey: "id"
+      });
     }
   }
   Contents.init(
     {
       title: DataTypes.STRING,
       content: DataTypes.STRING,
-      author_id: DataTypes.INTEGER,
+      author_id: DataTypes.INTEGER
     },
     {
       sequelize,
-      modelName: "Contents",
+      modelName: "Contents"
     }
   );
   return Contents;
