@@ -5,4 +5,5 @@ export const SuccessMessages = Object.freeze({
 
   // 게시물
   CONTENT_SUCCESS: "게시물이 작성되었습니다."
+  TOKEN_REFRESH_SUCCESS: "토큰 갱신에 성공하였습니다."
 });
