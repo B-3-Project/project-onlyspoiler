@@ -1,17 +1,15 @@
 import db from "../../models/index.cjs";
+const { Users } = db;
 import { StatusCodes } from "../../constants/statusCodes.constant.js";
 import { ErrorMessages } from "../../constants/errorMessage.constant.js";
 import { SuccessMessages } from "../../constants/successMessage.constant.js";
 import { createError } from "../../utils/errorResponse.js";
-const { Users } = db;
 
 export const signup = async (req, res, next) => {
-  const { email, password, passwordConfirm, name } = req.body;
+  const { email, password, name } = req.body;
 
   const existingUser = await Users.findOne({
-    where: {
-      email
-    }
+    where: { email }
   });
 
   if (existingUser) {
