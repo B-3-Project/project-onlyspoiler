@@ -212,6 +212,53 @@ export const updateDetcontent = async (req, res) => {
   }
 };
 
+// 게시물 삭제
+export const deleteDetcontent = async (req, res) => {
+  const { Id } = req.params;
+  const existsContent = await Contents.findOne({ where: { id: Id } });
+  const userIdCHhk = res.locals.user.id;
+
+  try {
+    //productId 공백 확인
+    if (existsContent === null) {
+      let errMsg = ErrorMessages.INVALID_DATA;
+
+      if (Id.length > 0) {
+        errMsg = ErrorMessages.MISSING_USERID;
+      }
+
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: errMsg
+      });
+    }
+
+    // 사용자ID 일치여부
+    if (Number(existsContent.author_id) === userIdCHhk) {
+      //Contents 테이블과 res.locals.user 비교
+      // 삭제 진행
+      await Contents.destroy({ where: { id: Id } });
+
+      return res.json({
+        success: true,
+        message: SuccessMessages.DELETE_SUCCESS
+      });
+    } else {
+      failResponseMsg(
+        res,
+        StatusCodes.UNAUTHORIZED,
+        ErrorMessages.UNAUTHORIZED_CONTENT
+      );
+    }
+  } catch (error) {
+    failResponseMsg(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + error
+    );
+  }
+};
+
 const failResponseMsg = (res, statusCode, message) => {
   return res.status(statusCode).json({
     success: false,

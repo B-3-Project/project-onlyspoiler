@@ -8,6 +8,7 @@ export const SuccessMessages = Object.freeze({
   READ_SUCCESS: "게시물 전체 조회에 성공했습니다.",
   READDET_SUCCESS: "게시물 상세 조회에 성공했습니다.",
   UPDATE_SUCCESS: "게시물이 수정되었습니다.",
+  DELETE_SUCCESS: "게시물이 삭제되었습니다.",
   TOKEN_REFRESH_SUCCESS: "토큰 갱신에 성공하였습니다.",
 
   //회원조회
