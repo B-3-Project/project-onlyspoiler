@@ -8,6 +8,6 @@ export const SuccessMessages = Object.freeze({
   READ_SUCCESS: "게시물 전체 조회에 성공했습니다.",
   TOKEN_REFRESH_SUCCESS: "토큰 갱신에 성공하였습니다.",
 
-  //회원조회
+  // 회원조회
   PROFILE_LODING_CUCCESS: "프로필을 성공적으로 확인하였습니다."
 });
