@@ -1,6 +1,9 @@
 import express from "express";
 import { ROUTES } from "../../constants/contents.constant.js";
-import { createcontent } from "../../controllers/contents/contents.controller.js";
+import {
+  createcontent,
+  readcontent
+} from "../../controllers/contents/contents.controller.js";
 import { chkCreateContent } from "../../validates/contents/createcontents.validate.js";
 import {
   authenticateUser,
@@ -15,5 +18,8 @@ router.post(
   [chkCreateContent, verifyToken, authenticateUser],
   createcontent
 );
+
+// POST 게시물 전체조회
+router.get(ROUTES.VIEWALLPOSTS, readcontent);
 
 export default router;

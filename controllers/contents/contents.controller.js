@@ -5,10 +5,11 @@ import { SuccessMessages } from "../../constants/successMessage.constant.js";
 import { createError } from "../../utils/errorResponse.js";
 const { Contents, Users } = db;
 
+// 게시물 생성
 export const createcontent = async (req, res) => {
   const { title, content } = req.body;
 
-  // 상품 입력을 위한 id 가져오기
+  // 게시물 생성을 위한 id 가져오기
   const userId = res.locals.user.id;
 
   try {
@@ -16,7 +17,7 @@ export const createcontent = async (req, res) => {
       throw createError(StatusCodes.NOT_FOUND, ErrorMessages.MISSING_USERID);
     }
 
-    const createdProducts = await Contents.create({
+    const createContent = await Contents.create({
       title,
       content,
       author_id: userId
@@ -32,17 +33,72 @@ export const createcontent = async (req, res) => {
       success: true,
       message: SuccessMessages.CONTENT_SUCCESS,
       data: {
-        id: createdProducts.id,
-        title: createdProducts.title,
-        content: createdProducts.content,
+        id: createContent.id,
+        title: createContent.title,
+        content: createContent.content,
         author: user ? user.name : null,
-        createdAt: createdProducts.createdAt
+        createdAt: createContent.createdAt
       }
     });
   } catch (error) {
-    res.status(500).send({
-      sucess: false,
-      errerMessage: error
+    throw createError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + " " + error
+    );
+  }
+};
+
+// 게시물 전체조회
+export const readcontent = async (req, res) => {
+  const { sort } = req.query;
+
+  let sortText = sort && sort.toUpperCase() === "ASC" ? "ASC" : "DESC"; //default 최신순
+  let sortOption = [["createdAt", sortText]];
+
+  try {
+    const user = await Users.findAll({});
+    const userList = user.map(item => ({
+      id: item.id,
+      name: item.name
+    }));
+
+    const contentsList = await Contents.findAll({
+      order: sortOption // Query String에 따라 대문자로 받아 정렬 방식 변경
     });
+
+    // 이후 데이터 가공 및 반환
+    const resultList = contentsList.map(item => ({
+      id: item.id,
+      author_id: item.author_id,
+      title: item.title,
+      content: item.content,
+      author: null,
+      createdAt: item.createdAt
+    }));
+
+    // resultArray의 각 요소에 대해 반복
+    resultList.forEach(item => {
+      // userList에서 userId와 일치하는 id를 가진 사용자 찾기
+      const user = userList.find(user => user.id === Number(item.author_id));
+
+      // userList에서 찾은 사용자의 nickname을 resultList nickname으로 변경
+      if (user) {
+        item.author = user.name;
+      }
+
+      // userId 속성 삭제(조회 안되도 되는 정보)
+      delete item.author_id;
+    });
+
+    res.json({
+      success: true,
+      message: SuccessMessages.READ_SUCCESS,
+      data: resultList
+    });
+  } catch (error) {
+    throw createError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + " " + error
+    );
   }
 };
