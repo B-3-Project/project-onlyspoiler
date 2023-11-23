@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>마이페이지</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2 id="userName">이름</h2>
+                <p>Email: <span id="userEmail">example@example.com</span></p>
+                <p>하고 싶은 말: <span id="userMessage">여기에 하고 싶은 말을 입력하세요.</span></p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeMessageModal">
+                    한마디 변경
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal">
+                    비밀번호 변경
+                </button>
+                <button type="button" class="btn btn-primary" id="gohome">
+                    홈페이지
+                </button>
+
+                <script>
+                    document.getElementById("gohome").addEventListener("click", function() {
+                        location.href = "./login.html";
+                    });
+                </script>
+            </div>
+        </div>
+    </div>ㄴ
+
+    <!-- 비밀번호 변경 모달 -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 비밀번호 변경 폼 -->
+                    <form onsubmit="return validateForm()">
+                        <div class="form-group">
+                            <label for="currentPassword">현재 비밀번호</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">새로운 비밀번호</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword">새로운 비밀번호 확인</label>
+                            <input type="password" class="form-control" id="confirmNewPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeMessageModal" tabindex="-1" role="dialog" aria-labelledby="changeMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeMessageModalLabel">한마디 변경</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 한마디 변경 폼 -->
+                    <form onsubmit="return validateMessageForm()">
+                        <div class="form-group">
+                            <label for="newUserMessage">새로운 하고 싶은 말</label>
+                            <textarea class="form-control" id="newUserMessage" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">변경</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#changePasswordModal').on('hidden.bs.modal', function() {
+                // 모달이 닫힐 때 폼 내용을 리셋
+                $('#changePasswordForm')[0].reset();
+            });
+        });
+
+        function validateForm() {
+            var newPassword = document.getElementById("newPassword").value;
+            var confirmNewPassword = document.getElementById("confirmNewPassword").value;
+
+            if (newPassword !== confirmNewPassword) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return false;
+            } else {
+                alert("비밀번호가 변경되었습니다.");
+                return true;
+            }
+        }
+
+        // 하고싶은말 변경
+        function validateMessageForm() {
+            var newUserMessage = $('#newUserMessage').val();
+
+            // 여기서는 간단한 유효성 검사만 수행 (비어있는지만 확인)
+            if (!newUserMessage) {
+                alert("하고 싶은 말을 입력하세요.");
+                return false;
+            }
+
+            // 수정된 내용을 적용 (이 부분은 서버로 전송하거나 데이터베이스에 저장하는 등으로 변경 가능)
+            $('#userMessage').text(newUserMessage);
+
+            alert("하고 싶은 말이 변경되었습니다.");
+            $('#changeMessageModal').modal('hide');
+            return true;
+        }
+
+        //ID에서 받아온...이름과, 이메일, 하고싶은말
+        document.getElementById("userName").innerText = " ID.이름";
+        document.getElementById("userEmail").innerText = "ID.이메일";
+        document.getElementById("userMessage").innerText = "ID.하고싶은말";
+    </script>
+
+</body>
+
+</html>
