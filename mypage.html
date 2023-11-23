@@ -9,6 +9,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>마이페이지</title>
+
+
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vh;
+        }
+        
+        .row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card {
+            border-radius: 20px;
+            margin-top: 50px;
+        }
+        
+        .card-img-top {
+            max-height: 200px;
+            border-radius: 15px;
+        }
+        
+        .list-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,27 +57,32 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h2 id="userName">이름</h2>
-                <p>Email: <span id="userEmail">example@example.com</span></p>
-                <p>하고 싶은 말: <span id="userMessage">여기에 하고 싶은 말을 입력하세요.</span></p>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeMessageModal">
-                    한마디 변경
-                </button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal">
-                    비밀번호 변경
-                </button>
-                <button type="button" class="btn btn-primary" id="gohome">
-                    홈페이지
-                </button>
-
-                <script>
-                    document.getElementById("gohome").addEventListener("click", function() {
-                        location.href = "./login.html";
-                    });
-                </script>
+                <div class="card" style="width: 25rem;">
+                    <img src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F75%2F26%2F2d%2F75262df5859aaa32930b0245a87e75b9.jpg&type=a340" class="card-img-top" alt="https://i.pinimg.com/originals/75/26/2d/75262df5859aaa32930b0245a87e75b9.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">이름</h5>
+                        <p>Email: <span id="userEmail">example@example.com</span></p>
+                        <p style=" height : 100px;">나의 한마디: <span id="userMessage">여기에 하고 싶은 말을 입력하세요.</span></p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeMessageModal">
+                                한마디
+                                 변경
+                            </button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal" style="margin-left:15px;">
+                                비밀번호 변경
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            <button type="button" class="btn btn-primary" id="gohome" style="margin-top : 10px; ">
+                홈페이지
+            </button>
         </div>
-    </div>ㄴ
+    </div>
+
 
     <!-- 비밀번호 변경 모달 -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
@@ -94,9 +140,13 @@
     </div>
 
     <script>
+        // 홈페이지버튼
+        document.getElementById("gohome").addEventListener("click", function() {
+            location.href = "./login.html";
+        });
+
         $(document).ready(function() {
             $('#changePasswordModal').on('hidden.bs.modal', function() {
-                // 모달이 닫힐 때 폼 내용을 리셋
                 $('#changePasswordForm')[0].reset();
             });
         });
