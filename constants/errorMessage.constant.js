@@ -13,6 +13,11 @@ export const ErrorMessages = Object.freeze({
   SERVER_ERROR: "서버 내부 오류가 발생하였습니다.",
   MISSING_TOKEN: "헤더에 유효한 토큰이 없습니다.",
   INVALID_USER: "유효한 사용자가 아닙니다.",
+  INVALID_TOKEN: "유효하지 않은 토큰입니다.",
   TOKEN_EXPIRED: "토큰의 유효기간이 지났습니다.",
-  TOKEN_VERIFICATION_FAILED: "토큰 검증에 실패하였습니다."
+  TOKEN_VERIFICATION_FAILED: "토큰 검증에 실패하였습니다.",
+  //게시물
+  MISSING_TITLE: "게시물 제목을 입력해주세요.",
+  MISSING_CONTENT: "게시물 내용을 입력해주세요.",
+  MISSING_USERID: "사용자ID 조회에 실패하였습니다."
 });

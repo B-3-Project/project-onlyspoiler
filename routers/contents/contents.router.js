@@ -1,11 +1,19 @@
 import express from "express";
 import { ROUTES } from "../../constants/contents.constant.js";
-//import { signup } from "../../controllers/auth/auth.controller.js";
-//import { validateSignup } from "../../validates/auth/signup.validate.js";
+import { createcontent } from "../../controllers/contents/contents.controller.js";
+import { chkCreateContent } from "../../validates/contents/createcontents.validate.js";
+import {
+  authenticateUser,
+  verifyToken
+} from "../../middlewares/auth/auth.middleware.js";
 
 const router = express.Router();
 
-// POST
-//router.post(ROUTES.SIGNUP, validateSignup, signup);
+// POST 게시물 등록
+router.post(
+  ROUTES.VIEWALLPOSTS,
+  [chkCreateContent, verifyToken, authenticateUser],
+  createcontent
+);
 
 export default router;
