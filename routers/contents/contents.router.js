@@ -3,7 +3,8 @@ import { ROUTES } from "../../constants/contents.constant.js";
 import {
   createcontent,
   readcontent,
-  readDetcontent
+  readDetcontent,
+  updateDetcontent
 } from "../../controllers/contents/contents.controller.js";
 import { chkCreateContent } from "../../validates/contents/createcontents.validate.js";
 import {
@@ -20,10 +21,17 @@ router.post(
   createcontent
 );
 
-// POST 게시물 전체조회
+// GET 게시물 전체조회
 router.get(ROUTES.VIEWALLPOSTS, readcontent);
 
-// POST 게시물 상세조회
+// GET 게시물 상세조회
 router.get(ROUTES.VIEWDETAILPOST, readDetcontent);
+
+// PUT 게시물 수정
+router.put(
+  ROUTES.VIEWDETAILPOST,
+  [verifyToken, authenticateUser],
+  updateDetcontent
+);
 
 export default router;
