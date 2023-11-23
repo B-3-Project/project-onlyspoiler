@@ -5,7 +5,7 @@ import { chkCreateContent } from "../../validates/contents/createcontents.valida
 import {
   authenticateUser,
   verifyToken
-} from "../../middlewares/auth/signup.middleware.js";
+} from "../../middlewares/auth/auth.middleware.js";
 
 const router = express.Router();
 
