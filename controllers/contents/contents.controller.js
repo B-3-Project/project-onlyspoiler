@@ -165,7 +165,7 @@ export const updateDetcontent = async (req, res) => {
     const existsContent = await Contents.findOne({ where: { id: Id } });
     const userIdCHhk = res.locals.user.id;
 
-    //productId 공백 확인
+    //productId 공백 확인!!
     if (existsContent === null) {
       let errMsg = ErrorMessages.INVALID_DATA;
 
