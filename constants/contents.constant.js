@@ -1,3 +1,4 @@
 export const ROUTES = Object.freeze({
-  VIEWALLPOSTS: "/contents"
+  VIEWALLPOSTS: "/contents",
+  VIEWDETAILPOST: "/contents/:Id"
 });
