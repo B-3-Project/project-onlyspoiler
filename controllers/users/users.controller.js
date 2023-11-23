@@ -27,7 +27,7 @@ export const getUserProfile = async (req, res) => {
             success: true,
             message: SuccessMessages.PROFILE_LODING_CUCCESS,
             data: {
-                id: user.id,
+                id,
                 username: user.username,
                 description: user.description || '',
             },
