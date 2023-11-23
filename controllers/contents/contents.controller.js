@@ -102,3 +102,56 @@ export const readcontent = async (req, res) => {
     );
   }
 };
+
+// 게시물 상세조회
+export const readDetcontent = async (req, res) => {
+  const { Id } = req.params;
+
+  try {
+    const users = await Users.findAll({});
+    const userList = users.map(item => ({
+      id: item.id,
+      name: item.name
+    }));
+    const existsContent = await Contents.findOne({ where: { id: Id } });
+
+    if (existsContent === null) {
+      console.log("err:" + existsContent);
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: ErrorMessages.MISSING_USERID
+      });
+      //throw createError(StatusCodes.BAD_REQUEST, ErrorMessages.MISSING_USERID);
+    }
+
+    const user = userList.find(
+      user => user.id === Number(existsContent.author_id)
+    );
+
+    const resultList = {
+      id: existsContent.id,
+      title: existsContent.title,
+      content: existsContent.content,
+      author: user.name,
+      createdAt: existsContent.createdAt
+    };
+
+    if (resultList !== null) {
+      return res.json({
+        success: true,
+        message: SuccessMessages.READDET_SUCCESS,
+        data: resultList
+      });
+    } else {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: ErrorMessages.MISSINGDET_CONTENT
+      });
+    }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      sucess: false,
+      errerMessage: ErrorMessages.SERVER_ERROR + error
+    });
+  }
+};
