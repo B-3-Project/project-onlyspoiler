@@ -29,19 +29,20 @@ export const getUserProfile = async (req, res) => {
             success: true,
             message: SuccessMessages.PROFILE_LODING_SUCCESS,
             data: {
-                id,
+                // userId를 사용해야 합니다.
+                id: userId,
                 username: user.username,
-                description: user.description || '',
-            },
+                description: user.description || ""
+            }
         });
     } catch (err) {
-        throw createError(
-            StatusCodes.BAD_REQUEST,
-            ErrorMessages.UNEXPECTED_ERROR
-        )
+        // sjon -> json 으로 수정
+        res.status(StatusCodes.BAD_REQUEST).sjon({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
     }
 };
-
 
 // 회원 정보 수정
 export const putUserProfile = async (req, res) => {
@@ -69,19 +70,20 @@ export const putUserProfile = async (req, res) => {
             success: true,
             message: SuccessMessages.PROFILE_MODIFY_SUCCESS,
             data: {
-                id,
+                // userId를 사용해야 합니다.
+                id: userId,
                 username: updateUser.username,
-                description: updateUser.description || '',
-            },
+                description: updateUser.description || ""
+            }
         });
     } catch (err) {
-        throw createError(
-            StatusCodes.BAD_REQUEST,
-            ErrorMessages.UNEXPECTED_ERROR
-        )
+        // josn -> json 으로 수정
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
     }
 };
-
 
 // 비밀번호 수정
 export const changePassword = async (req, res, next) => {
@@ -108,16 +110,17 @@ export const changePassword = async (req, res, next) => {
             );
         }
 
+        // Users 테이블의 hooks에서 이미 비밀번호 해시화를 진행하고 있습니다. 참고하시고 맞게 수정하시면 좋을 거 같습니다.
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
         await user.update({ password: hashedNewPassword });
 
-        res.json({ success: true, message: 'Password updated successfully' });
-
+        res.json({ success: true, message: "Password updated successfully" });
     } catch (error) {
-        throw createError(
-            StatusCodes.BAD_REQUEST,
-            ErrorMessages.UNEXPECTED_ERROR
-        )
+        // json -> json 으로 수정
+        res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
     }
-}
+};
