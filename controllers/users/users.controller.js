@@ -10,7 +10,7 @@ import { ErrorMessages } from "../../constants/errorMessage.constant.js";
 import { SuccessMessages } from "../../constants/successMessage.constant.js";
 import { createError } from "../../utils/errorResponse.js";
 
-
+// 회원 정보 조회
 export const getUserProfile = async (req, res) => {
     try {
         const userId = res.locals.decoded.userId;
@@ -30,6 +30,41 @@ export const getUserProfile = async (req, res) => {
                 id,
                 username: user.username,
                 description: user.description || '',
+            },
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+// 회원 정보 수정
+export const putUserProfile = async (req, res) => {
+    try {
+        const userId = res.locals.decoded.userId;
+        const { name, email, description } = req.body;
+
+        const [updateProfile] = await Users.update(
+            { username: name, email, description },
+            { where: { id: userId } }
+        );
+
+        if (updateProfile === 0) {
+            throw createError(
+                StatusCodes.NOT_FOUND,
+                ErrorMessages.PRORILE_NOT_MODIFY
+            );
+        }
+
+        const updateUser = await Users.findByPk(userId);
+
+        res.status(StatusCodes.OK).json({
+            success: true,
+            message: SuccessMessages.PROFILE_MODIFY_SUCCESS,
+            data: {
+                id,
+                username: updateUser.username,
+                description: updateUser.description || '',
             },
         });
     } catch (err) {
