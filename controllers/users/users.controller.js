@@ -14,6 +14,8 @@ import { createError } from "../../utils/errorResponse.js";
 export const getUserProfile = async (req, res) => {
     try {
         const userId = res.locals.user.Id;
+        // const userId = res.locals.decoded.userId;
+
         const user = await Users.findByPk(userId);
 
         if (!user) {
@@ -44,7 +46,9 @@ export const getUserProfile = async (req, res) => {
 // 회원 정보 수정
 export const putUserProfile = async (req, res) => {
     try {
-        const userId = res.locals.decoded.userId;
+        const userId = res.locals.user.Id;
+
+        // const userId = res.locals.decoded.userId;
         const { name, email, description } = req.body;
 
         const [updateProfile] = await Users.update(
@@ -82,7 +86,9 @@ export const putUserProfile = async (req, res) => {
 // 비밀번호 수정
 export const changePassword = async (req, res, next) => {
     try {
-        const userId = res.locals.decoded.userId;
+        const userId = res.locals.user.Id;
+
+        // const userId = res.locals.decoded.userId;
         const { currentPassword, newPassword } = req.body;
 
         // 현재 비밀번호 확인
