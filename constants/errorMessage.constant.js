@@ -29,5 +29,6 @@ export const ErrorMessages = deepFreeze({
   PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
 
   // 댓글
-  MISSING_CONTENTID: "게시물 조회에 실패하였습니다."
+  MISSING_CONTENTID: "게시물 조회에 실패하였습니다.",
+  UNAUTHORIZED_COMMENT: "댓글을 수정할 권한이 없습니다."
 });

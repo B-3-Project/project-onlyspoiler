@@ -133,7 +133,7 @@ export const readDetcontent = async (req, res) => {
       id: existsContent.id,
       title: existsContent.title,
       content: existsContent.content,
-      author: user ? user.name : "탈퇴자",
+      author: user ? user.name : null,
       createdAt: existsContent.createdAt
     };
 

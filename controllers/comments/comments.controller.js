@@ -120,6 +120,61 @@ export const readcomment = async (req, res) => {
 };
 
 // 댓글 수정 (댓글 작성자만 가능하도록)
+export const updatecomment = async (req, res) => {
+  const { Id, commentId } = req.params;
+  const { comments } = req.body;
+
+  try {
+    const existsComment = await Comments.findOne({
+      where: { id: commentId, contents_id: Id }
+    });
+    const userIdCHhk = res.locals.user.id;
+
+    //productId 공백 확인!!
+    if (!existsComment) {
+      return failResponseMsg(
+        res,
+        StatusCodes.BAD_REQUEST,
+        ErrorMessages.INVALID_STATUS
+      );
+    }
+
+    // 사용자iD 일치여부
+    if (Number(existsComment.user_id) === userIdCHhk) {
+      //Products 테이블과 res.locals.user 비교
+      await Comments.update(
+        { comments },
+        {
+          where: { id: commentId }
+        }
+      );
+
+      const updateComment = await Comments.findOne({
+        where: { id: commentId }
+      });
+
+      delete updateComment.contents_id;
+
+      return res.json({
+        success: true,
+        message: SuccessMessages.COMMENT_UPT_SUCCESS,
+        data: updateComment
+      });
+    } else {
+      return failResponseMsg(
+        res,
+        StatusCodes.UNAUTHORIZED,
+        ErrorMessages.UNAUTHORIZED_COMMENT
+      );
+    }
+  } catch (error) {
+    return failResponseMsg(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + error
+    );
+  }
+};
 
 // 댓글 삭제 (댓글 작성자만 가능하도록)
 
