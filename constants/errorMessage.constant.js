@@ -22,5 +22,6 @@ export const ErrorMessages = deepFreeze({
   MISSING_TITLE: "게시물 제목을 입력해주세요.",
   MISSING_CONTENT: "게시물 내용을 입력해주세요.",
   MISSING_USERID: "사용자ID 조회에 실패하였습니다.",
-  MISSINGDET_CONTENT: "게시물 상세조회에 실패하였습니다."
+  MISSINGDET_CONTENT: "게시물 상세조회에 실패하였습니다.",
+  UNAUTHORIZED_CONTENT: "게시물을 수정할 권한이 없습니다."
 });
