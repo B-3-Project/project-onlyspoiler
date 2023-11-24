@@ -59,12 +59,9 @@ router.get(
     failureRedirect: "/fail.html"
   }),
   function (req, res) {
-    res.redirect(
-      "/login.html?accessToken=" +
-        req.user.accessToken +
-        "&refreshToken=" +
-        req.user.refreshToken
-    );
+    res.cookie("accessToken", req.user.accessToken, { httpOnly: true });
+    res.cookie("refreshToken", req.user.refreshToken, { httpOnly: true });
+    res.redirect("/login.html");
   }
 );
 
