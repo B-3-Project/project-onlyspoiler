@@ -26,5 +26,10 @@ export const ErrorMessages = deepFreeze({
   UNAUTHORIZED_CONTENT: "게시물을 수정할 권한이 없습니다.",
 
   // 회원정보 수정
-  PRORILE_NOT_MODIFY: "수정된 내용이 없습니다."
+  PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+
+  // 댓글
+  MISSING_CONTENTID: "게시물 조회에 실패하였습니다.",
+  UNAUTHORIZED_COMMENT: "댓글을 수정할 권한이 없습니다.",
+  INVALID_USERID_POST: "댓글의 게시물 또는 사용자ID 조회에 실패하였습니다."
 });
