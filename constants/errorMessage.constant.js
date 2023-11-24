@@ -1,4 +1,6 @@
-export const ErrorMessages = Object.freeze({
+import { deepFreeze } from "../utils/deepFreeze.js";
+
+export const ErrorMessages = deepFreeze({
   MISSING_EMAIL: "이메일을 입력해주세요.",
   MISSING_PASSWORD: "비밀번호 혹은 비밀번호 재확인을 입력해주세요.",
   MISSING_NAME: "이름을 입력해주세요.",

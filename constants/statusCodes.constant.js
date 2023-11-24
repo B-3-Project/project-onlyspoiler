@@ -1,4 +1,6 @@
-export const StatusCodes = Object.freeze({
+import { deepFreeze } from "../utils/deepFreeze.js";
+
+export const StatusCodes = deepFreeze({
   OK: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
