@@ -14,7 +14,7 @@
     <style>
         .title-group {
             display: flex;
-            justify-content: flex;
+            justify-content: flex-end;
             align-items: center;
             align-content: center;
             margin-left: auto;
@@ -24,7 +24,7 @@
         }
         
         .button-group {
-            justify-content: flex;
+            justify-content: flex-end;
             align-items: center;
             align-content: center;
             margin-left: auto;
@@ -295,7 +295,7 @@
             '               </button>' +
             '           </div>' +
             '           <div class="modal-body">' +
-            '               <p>' + modalContent + '</p>' +
+            '               <p id="modalContent_' + postId + '">' + modalContent + '</p>' +
             '               <p><em>작성 시간: ' + formatTime() + '</em></p>' +
             '               <div class="form-group">' +
             '                   <label for="comment">댓글:</label>' +
@@ -306,16 +306,58 @@
             '           </div>' +
             '           <div class="modal-footer">' +
             '               <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>' +
+            '               <button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>' +
+            '               <button type="button" class="btn btn-danger" onclick="deletePost(\'' + modalId + '\', \'' + postId + '\')">삭제</button>' +
             '           </div>' +
             '       </div>' +
             '   </div>' +
             '</div>';
 
+        // 모달과 버튼을 추가
         $("#buttonContainer").prepend(buttonHtml);
         $("#modalContainer").append(modalHtml);
     }
 
+    function deletePost(modalId, postId) {
+        // 모달 닫기
+        $("#" + modalId).modal('hide');
 
+        setTimeout(function() {
+            var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
+            if (confirmDelete) {
+                // 모달 및 버튼 삭제
+                $("#" + modalId).remove();
+                $("#buttonContainer button[data-target='#" + modalId + "']").remove();
+            }
+        }, 150);
+    }
+
+
+    function editPostAndSaveButton(modalId, postId) {
+        // 모달 콘텐츠를 TEXTAREA로 변경
+        var modalContentParagraph = $("#modalContent_" + postId);
+        var modalContent = modalContentParagraph.text().trim();
+        var modalTextAreaHtml = '<textarea class="form-control" id="editedContent_' + postId + '" rows="3">' + modalContent + '</textarea>';
+        modalContentParagraph.replaceWith(modalTextAreaHtml);
+
+        // "수정" 버튼 대신 "저장" 버튼 생성
+        var saveButtonHtml = '<button type="button" class="btn btn-success" onclick="saveEditedContent(\'' + modalId + '\', \'' + postId + '\')">저장</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-warning').replaceWith(saveButtonHtml);
+    }
+
+    function saveEditedContent(modalId, postId) {
+        var editedContent = $("#editedContent_" + postId).val();
+
+        // 수정된 내용을 원래 내용에 업데이트
+        var modalTextArea = $("#editedContent_" + postId);
+        var modalContentParagraphHtml = '<p id="modalContent_' + postId + '">' + editedContent + '</p>';
+        modalTextArea.replaceWith(modalContentParagraphHtml);
+
+        // "저장" 버튼을 다시 "수정" 버튼으로 변경
+        var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);
+
+    }
 
     function submitComment(postId) {
         var comment = $('#comment_' + postId).val().trim();
