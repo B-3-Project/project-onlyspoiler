@@ -103,6 +103,9 @@
                             <label for="modalContent">글 내용:</label>
                             <textarea class="form-control" id="modalContent" rows="3"></textarea>
                         </div>
+                        <div>
+
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -239,13 +242,26 @@
         $('#회원가입').modal('hide');
     }
 
+    function formatTime() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = (now.getMonth() + 1).toString().padStart(2, '0');
+        var day = now.getDate().toString().padStart(2, '0');
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        var seconds = now.getSeconds().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     function submitPost() {
         var postTitle = $('#content-title').val();
         var postContent = $('#modalContent').val();
 
         if (postContent.trim() !== '') {
             var postId = "post" + new Date().getTime();
-            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '</p>';
+            var postTime = formatTime();
+            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '<br><em>작성 시간: ' + postTime + '</em></p>';
 
             $("#commentContainer").append(postHtml);
 
@@ -259,7 +275,7 @@
         }
     }
 
-    function addButtonAndModal(buttonText, modalContent, postId) {
+    function addButtonAndModal(buttonText, modalContent, postId, username) {
         // 버튼과 모달을 위한 고유한 ID 생성
         var modalId = "modal" + new Date().getTime();
 
@@ -273,12 +289,14 @@
             '       <div class="modal-content">' +
             '           <div class="modal-header">' +
             '               <h5 class="modal-title">' + buttonText + '</h5>' +
+            '               <p><em>작성자: ' + username + '</em></p>' +
             '               <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
             '                   <span aria-hidden="true">&times;</span>' +
             '               </button>' +
             '           </div>' +
             '           <div class="modal-body">' +
             '               <p>' + modalContent + '</p>' +
+            '               <p><em>작성 시간: ' + formatTime() + '</em></p>' +
             '               <div class="form-group">' +
             '                   <label for="comment">댓글:</label>' +
             '                   <textarea class="form-control" id="comment_' + postId + '" rows="3"></textarea>' +
@@ -296,6 +314,8 @@
         $("#buttonContainer").prepend(buttonHtml);
         $("#modalContainer").append(modalHtml);
     }
+
+
 
     function submitComment(postId) {
         var comment = $('#comment_' + postId).val().trim();
