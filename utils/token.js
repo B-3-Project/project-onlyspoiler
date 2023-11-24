@@ -6,6 +6,7 @@ import { StatusCodes } from "../constants/statusCodes.constant.js";
 import { ErrorMessages } from "../constants/errorMessage.constant.js";
 import { SuccessMessages } from "../constants/successMessage.constant.js";
 import ms from "ms";
+import "dotenv/config";
 
 export const generateToken = async userId => {
   const accessExpiresIn = "1h";
@@ -75,4 +76,12 @@ export const refreshToken = async (req, res, next) => {
     }
     next(err);
   }
+};
+
+export const generateVerificationToken = userId => {
+  const token = jwt.sign({ userId }, process.env.JWT_VERIFICATION_SECRET, {
+    expiresIn: "1h"
+  });
+
+  return token;
 };

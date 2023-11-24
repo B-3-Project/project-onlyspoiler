@@ -102,3 +102,166 @@ export const readcontent = async (req, res) => {
     );
   }
 };
+
+// 게시물 상세조회
+export const readDetcontent = async (req, res) => {
+  const { Id } = req.params;
+
+  try {
+    const users = await Users.findAll({});
+    const userList = users.map(item => ({
+      id: item.id,
+      name: item.name
+    }));
+    const existsContent = await Contents.findOne({ where: { id: Id } });
+
+    if (existsContent === null) {
+      console.log("err:" + existsContent);
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: ErrorMessages.MISSING_USERID
+      });
+      //throw createError(StatusCodes.BAD_REQUEST, ErrorMessages.MISSING_USERID);
+    }
+
+    const user = userList.find(
+      user => user.id === Number(existsContent.author_id)
+    );
+
+    const resultList = {
+      id: existsContent.id,
+      title: existsContent.title,
+      content: existsContent.content,
+      author: user.name,
+      createdAt: existsContent.createdAt
+    };
+
+    if (resultList !== null) {
+      return res.json({
+        success: true,
+        message: SuccessMessages.READDET_SUCCESS,
+        data: resultList
+      });
+    } else {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: ErrorMessages.MISSINGDET_CONTENT
+      });
+    }
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({
+      sucess: false,
+      errerMessage: ErrorMessages.SERVER_ERROR + error
+    });
+  }
+};
+
+// 게시물 수정
+export const updateDetcontent = async (req, res) => {
+  const { Id } = req.params;
+  const { title, content } = req.body;
+
+  try {
+    const existsContent = await Contents.findOne({ where: { id: Id } });
+    const userIdCHhk = res.locals.user.id;
+
+    //productId 공백 확인!!
+    if (existsContent === null) {
+      let errMsg = ErrorMessages.INVALID_DATA;
+
+      if (Id.length > 0) {
+        errMsg = ErrorMessages.MISSING_USERID;
+      }
+
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: errMsg
+      });
+    }
+
+    // 사용자iD 일치여부
+    if (Number(existsContent.author_id) === userIdCHhk) {
+      //Products 테이블과 res.locals.user 비교
+      await Contents.update(
+        { title, content },
+        {
+          where: { id: Id }
+        }
+      );
+
+      const updateContent = await Contents.findOne({ where: { id: Id } });
+
+      return res.json({
+        success: true,
+        message: SuccessMessages.UPDATE_SUCCESS,
+        data: updateContent
+      });
+    } else {
+      failResponseMsg(
+        res,
+        StatusCodes.UNAUTHORIZED,
+        ErrorMessages.UNAUTHORIZED_CONTENT
+      );
+    }
+  } catch (error) {
+    failResponseMsg(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + error
+    );
+  }
+};
+
+// 게시물 삭제
+export const deleteDetcontent = async (req, res) => {
+  const { Id } = req.params;
+  const existsContent = await Contents.findOne({ where: { id: Id } });
+  const userIdCHhk = res.locals.user.id;
+
+  try {
+    //productId 공백 확인
+    if (existsContent === null) {
+      let errMsg = ErrorMessages.INVALID_DATA;
+
+      if (Id.length > 0) {
+        errMsg = ErrorMessages.MISSING_USERID;
+      }
+
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        errorMessage: errMsg
+      });
+    }
+
+    // 사용자ID 일치여부
+    if (Number(existsContent.author_id) === userIdCHhk) {
+      //Contents 테이블과 res.locals.user 비교
+      // 삭제 진행
+      await Contents.destroy({ where: { id: Id } });
+
+      return res.json({
+        success: true,
+        message: SuccessMessages.DELETE_SUCCESS
+      });
+    } else {
+      failResponseMsg(
+        res,
+        StatusCodes.UNAUTHORIZED,
+        ErrorMessages.UNAUTHORIZED_CONTENT
+      );
+    }
+  } catch (error) {
+    failResponseMsg(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + error
+    );
+  }
+};
+
+const failResponseMsg = (res, statusCode, message) => {
+  return res.status(statusCode).json({
+    success: false,
+    message: message
+  });
+};

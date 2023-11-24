@@ -1,3 +1,5 @@
-export const ROUTES = Object.freeze({
-    PROFILE: "/user/profile"
+import { deepFreeze } from "../utils/deepFreeze.js";
+
+export const ROUTES = deepFreeze({
+  PROFILE: "/user/profile"
 });
