@@ -27,6 +27,7 @@ export const ErrorMessages = deepFreeze({
 
   // 회원정보 수정
   PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+  UNEXPECTED_ERROR: "예상치 못한 에러입니다. 관리자에게 문의하세요.",
 
   //비밀번호 수정
   INVALID_USER_INFO: "회원정보를 찾을 수 없습니다.",

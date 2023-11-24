@@ -33,10 +33,10 @@ export const getUserProfile = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).sjon({
-            success: false,
-            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
-        });
+        throw createError(
+            StatusCodes.BAD_REQUEST,
+            ErrorMessages.UNEXPECTED_ERROR
+        )
     }
 };
 
@@ -71,10 +71,10 @@ export const putUserProfile = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).josn({
-            success: false,
-            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
-        });
+        throw createError(
+            StatusCodes.BAD_REQUEST,
+            ErrorMessages.UNEXPECTED_ERROR
+        )
     }
 };
 
@@ -109,9 +109,9 @@ export const changePassword = async (req, res, next) => {
         res.json({ success: true, message: 'Password updated successfully' });
 
     } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).josn({
-            success: false,
-            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
-        });
+        throw createError(
+            StatusCodes.BAD_REQUEST,
+            ErrorMessages.UNEXPECTED_ERROR
+        )
     }
 }
