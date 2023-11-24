@@ -26,5 +26,9 @@ export const ErrorMessages = deepFreeze({
   UNAUTHORIZED_CONTENT: "게시물을 수정할 권한이 없습니다.",
 
   // 회원정보 수정
-  PRORILE_NOT_MODIFY: "수정된 내용이 없습니다."
+  PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+
+  //비밀번호 수정
+  INVALID_USER_INFO: "회원정보를 찾을 수 없습니다.",
+  INVALID_CURRENT_PASSWORD: "현재 비밀번호가 일치하지 않습니다."
 });

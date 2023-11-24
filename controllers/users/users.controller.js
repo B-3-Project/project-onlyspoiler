@@ -13,7 +13,7 @@ import { createError } from "../../utils/errorResponse.js";
 // 회원 정보 조회
 export const getUserProfile = async (req, res) => {
     try {
-        const userId = res.locals.decoded.userId;
+        const userId = res.locals.user.Id;
         const user = await Users.findByPk(userId);
 
         if (!user) {
@@ -25,7 +25,7 @@ export const getUserProfile = async (req, res) => {
 
         res.status(StatusCodes.OK).json({
             success: true,
-            message: SuccessMessages.PROFILE_LODING_CUCCESS,
+            message: SuccessMessages.PROFILE_LODING_SUCCESS,
             data: {
                 id,
                 username: user.username,
@@ -33,7 +33,10 @@ export const getUserProfile = async (req, res) => {
             },
         });
     } catch (err) {
-        next(err);
+        res.status(StatusCodes.BAD_REQUEST).sjon({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
     }
 };
 
@@ -68,6 +71,47 @@ export const putUserProfile = async (req, res) => {
             },
         });
     } catch (err) {
-        next(err);
+        res.status(StatusCodes.BAD_REQUEST).josn({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
     }
 };
+
+
+// 비밀번호 수정
+export const changePassword = async (req, res, next) => {
+    try {
+        const userId = res.locals.decoded.userId;
+        const { currentPassword, newPassword } = req.body;
+
+        // 현재 비밀번호 확인
+        const user = await Users.findByPk(userId);
+        if (!user) {
+            throw createError(
+                StatusCodes.BAD_REQUEST,
+                ErrorMessages.INVALID_USER_INFO
+            );
+        }
+
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) {
+            throw createError(
+                StatusCodes.UNAUTHORIZED,
+                ErrorMessages.INVALID_CURRENT_PASSWORD
+            );
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        await user.update({ password: hashedNewPassword });
+
+        res.json({ success: true, message: 'Password updated successfully' });
+
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).josn({
+            success: false,
+            errorMessage: "예상치 못한 에러입니다. 관리자에게 문의하세요."
+        });
+    }
+}
