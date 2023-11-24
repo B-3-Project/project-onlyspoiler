@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 const { OAuth2 } = google.auth;
 

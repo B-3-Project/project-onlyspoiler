@@ -6,8 +6,7 @@ import { StatusCodes } from "../constants/statusCodes.constant.js";
 import { ErrorMessages } from "../constants/errorMessage.constant.js";
 import { SuccessMessages } from "../constants/successMessage.constant.js";
 import ms from "ms";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 export const generateToken = async userId => {
   const accessExpiresIn = "1h";

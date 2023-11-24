@@ -6,8 +6,7 @@ import { SuccessMessages } from "../../constants/successMessage.constant.js";
 import { createError } from "../../utils/errorResponse.js";
 import sendMail from "../../utils/mailer.js";
 import { generateVerificationToken } from "../../utils/token.js";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 export const signup = async (req, res, next) => {
   const { email, password, name } = req.body;
