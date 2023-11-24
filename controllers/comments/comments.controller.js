@@ -135,7 +135,7 @@ export const updatecomment = async (req, res) => {
       return failResponseMsg(
         res,
         StatusCodes.BAD_REQUEST,
-        ErrorMessages.INVALID_STATUS
+        ErrorMessages.INVALID_USERID_POST
       );
     }
 
@@ -177,6 +177,49 @@ export const updatecomment = async (req, res) => {
 };
 
 // 댓글 삭제 (댓글 작성자만 가능하도록)
+export const deletecomment = async (req, res) => {
+  const { Id, commentId } = req.params;
+
+  try {
+    const existsComment = await Comments.findOne({
+      where: { contents_id: Id, id: commentId }
+    });
+    const userIdCHhk = res.locals.user.id;
+
+    //existsComment 공백 확인
+    if (!existsComment) {
+      return failResponseMsg(
+        res,
+        StatusCodes.BAD_REQUEST,
+        ErrorMessages.INVALID_USERID_POST
+      );
+    }
+
+    // 사용자ID 일치여부
+    if (Number(existsComment.user_id) === userIdCHhk) {
+      //Comments 테이블과 res.locals.user 비교
+      // 삭제 진행
+      await Comments.destroy({ where: { id: commentId } });
+
+      return res.json({
+        success: true,
+        message: SuccessMessages.COMMENT_DEL_SUCCESS
+      });
+    } else {
+      return failResponseMsg(
+        res,
+        StatusCodes.UNAUTHORIZED,
+        ErrorMessages.UNAUTHORIZED_COMMENT
+      );
+    }
+  } catch (error) {
+    return failResponseMsg(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      ErrorMessages.SERVER_ERROR + error
+    );
+  }
+};
 
 const failResponseMsg = (res, statusCode, message) => {
   return res.status(statusCode).json({

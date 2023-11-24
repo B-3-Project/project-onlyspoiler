@@ -30,5 +30,6 @@ export const ErrorMessages = deepFreeze({
 
   // 댓글
   MISSING_CONTENTID: "게시물 조회에 실패하였습니다.",
-  UNAUTHORIZED_COMMENT: "댓글을 수정할 권한이 없습니다."
+  UNAUTHORIZED_COMMENT: "댓글을 수정할 권한이 없습니다.",
+  INVALID_USERID_POST: "댓글의 게시물 또는 사용자ID 조회에 실패하였습니다."
 });

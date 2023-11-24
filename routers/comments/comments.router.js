@@ -3,7 +3,8 @@ import { ROUTES } from "../../constants/comments.constant.js";
 import {
   createcomment,
   readcomment,
-  updatecomment
+  updatecomment,
+  deletecomment
 } from "../../controllers/comments/comments.controller.js";
 import {
   authenticateUser,
@@ -27,6 +28,13 @@ router.put(
   ROUTES.UPDATECOMMENTS,
   [verifyToken, authenticateUser],
   updatecomment
+);
+
+// DELETE 댓글 삭제
+router.delete(
+  ROUTES.UPDATECOMMENTS,
+  [verifyToken, authenticateUser],
+  deletecomment
 );
 
 export default router;
