@@ -13,6 +13,7 @@ export const SuccessMessages = deepFreeze({
   DELETE_SUCCESS: "게시물이 삭제되었습니다.",
   TOKEN_REFRESH_SUCCESS: "토큰 갱신에 성공하였습니다.",
 
-  //회원조회
-  PROFILE_LODING_CUCCESS: "프로필을 성공적으로 확인하였습니다."
+  // 회원조회
+  PROFILE_LODING_SUCCESS: "프로필을 성공적으로 확인하였습니다.",
+  PROFILE_MODIFY_SUCCESS: "프로필이 수정되었습니다.",
 });
