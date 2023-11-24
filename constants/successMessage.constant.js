@@ -16,4 +16,7 @@ export const SuccessMessages = deepFreeze({
   // 회원조회
   PROFILE_LODING_SUCCESS: "프로필을 성공적으로 확인하였습니다.",
   PROFILE_MODIFY_SUCCESS: "프로필이 수정되었습니다.",
+
+  // 비밀번호 조회
+  PASSWORD_MODIFY_SUCCESS: "비밀번호 변경에 성공했습니다."
 });
