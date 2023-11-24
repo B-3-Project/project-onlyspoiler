@@ -298,10 +298,48 @@
     }
 
     function submitComment(postId) {
-        var comment = $('#comment_' + postId).val();
-        $('#commentContainer_' + postId).append('<p>' + comment + '</p>');
+        var comment = $('#comment_' + postId).val().trim();
+        if (comment === '') {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        var commentId = 'comment_' + postId + '_' + Date.now();
+        var commentHtml =
+            '<div id="' + commentId + '" class="comment-container">' +
+            '<p class="comment-text" style="margin-bottom: 0;">' + comment +
+            '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+            '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+            '</div>';
+
+        $('#commentContainer_' + postId).append(commentHtml);
         $('#comment_' + postId).val('');
     }
+
+    $('#modalContainer').on('click', '.delete-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        $('#' + commentId).remove();
+    });
+
+    $('#modalContainer').on('click', '.edit-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        var currentCommentContainer = $('#' + commentId);
+        var currentComment = currentCommentContainer.find('.comment-text').text();
+
+        var editedComment = prompt('Edit your comment:', currentComment);
+
+        if (editedComment !== null) {
+            var editedCommentHtml =
+                '<div id="' + commentId + '" class="comment-container">' +
+                '<p class="comment-text" style="margin-bottom: 0;">' + editedComment +
+                '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+                '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+                '</div>';
+            currentCommentContainer.html(editedCommentHtml);
+        }
+    });
 </script>
 
 
