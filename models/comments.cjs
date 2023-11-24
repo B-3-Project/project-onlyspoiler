@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association
-      models.Contents.belongsTo(models.Users, {
+      models.Comments.belongsTo(models.Users, {
         foreignKey: "user_id",
         targetKey: "id"
       });
-      models.Contents.belongsTo(models.Contents, {
+      models.Comments.belongsTo(models.Contents, {
         foreignKey: "contents_id",
         targetKey: "id"
       });

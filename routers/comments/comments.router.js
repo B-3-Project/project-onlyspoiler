@@ -1,6 +1,9 @@
 import express from "express";
 import { ROUTES } from "../../constants/comments.constant.js";
-import { createcomment } from "../../controllers/comments/comments.controller.js";
+import {
+  createcomment,
+  readcomment
+} from "../../controllers/comments/comments.controller.js";
 import {
   authenticateUser,
   verifyToken
@@ -14,5 +17,8 @@ router.post(
   [verifyToken, authenticateUser],
   createcomment
 );
+
+// GET 댓글 조회
+router.get(ROUTES.VIEWALLCOMMENTS, readcomment);
 
 export default router;
