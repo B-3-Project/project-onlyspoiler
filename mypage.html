@@ -10,7 +10,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>마이페이지</title>
 
-
     <style>
         .container {
             display: flex;
@@ -58,31 +57,26 @@
         <div class="row">
             <div class="col">
                 <div class="card" style="width: 25rem;">
-                    <img src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F75%2F26%2F2d%2F75262df5859aaa32930b0245a87e75b9.jpg&type=a340" class="card-img-top" alt="https://i.pinimg.com/originals/75/26/2d/75262df5859aaa32930b0245a87e75b9.jpg">
+                    <img src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F75%2F26%2F2d%2F75262df5859aaa32930b0245a87e75b9.jpg" class="card-img-top" alt="https://i.pinimg.com/originals/75/26/2d/75262df5859aaa32930b0245a87e75b9.jpg">
                     <div class="card-body">
                         <h5 class="card-title">이름</h5>
                         <p>Email: <span id="userEmail">example@example.com</span></p>
-                        <p style=" height : 100px;">나의 한마디: <span id="userMessage">여기에 하고 싶은 말을 입력하세요.</span></p>
+                        <div id="userMessageContainer">
+                            <p id="userMessage">여기에 하고 싶은 말을 입력하세요.</p>
+                        </div>
                     </div>
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush" id="userMessageActions">
                         <li class="list-group-item">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeMessageModal">
-                                한마디
-                                 변경
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal" style="margin-left:15px;">
-                                비밀번호 변경
+                            <button type="button" class="btn btn-primary" id="editUserMessageButton">수정</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal" style="margin-left:15px;">비밀번호 변경
                             </button>
                         </li>
                     </ul>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary" id="gohome" style="margin-top : 10px; ">
-                홈페이지
-            </button>
+            <button type="button" class="btn btn-primary" id="gohome" style="margin-top: 10px;">홈페이지</button>
         </div>
     </div>
-
 
     <!-- 비밀번호 변경 모달 -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
@@ -91,8 +85,8 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <!-- 비밀번호 변경 폼 -->
@@ -116,29 +110,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="changeMessageModal" tabindex="-1" role="dialog" aria-labelledby="changeMessageModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changeMessageModalLabel">한마디 변경</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- 한마디 변경 폼 -->
-                    <form onsubmit="return validateMessageForm()">
-                        <div class="form-group">
-                            <label for="newUserMessage">새로운 하고 싶은 말</label>
-                            <textarea class="form-control" id="newUserMessage" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">변경</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // 홈페이지버튼
         document.getElementById("gohome").addEventListener("click", function() {
@@ -149,6 +120,29 @@
             $('#changePasswordModal').on('hidden.bs.modal', function() {
                 $('#changePasswordForm')[0].reset();
             });
+        });
+
+        //수정,저장 버튼
+        $(document).on('click', '#editUserMessageButton', function() {
+            // TEXTAREA만들기
+            var userMessageContainer = $("#userMessageContainer");
+            var userMessageText = userMessageContainer.text().trim();
+            var userMessageTextAreaHtml = '<textarea class="form-control" id="editedUserMessage" rows="3">' + userMessageText + '</textarea>';
+            userMessageContainer.html(userMessageTextAreaHtml);
+
+            var saveButtonHtml = '<button type="button" class="btn btn-success" id="saveUserMessageButton">저장</button>';
+            $('#editUserMessageButton').replaceWith(saveButtonHtml);
+        });
+
+        $(document).on('click', '#saveUserMessageButton', function() {
+            var editedUserMessage = $("#editedUserMessage").val();
+
+            var userMessageContainer = $("#userMessageContainer");
+            var userMessageContainerHtml = '<p id="userMessage">' + editedUserMessage + '</p>';
+            userMessageContainer.html(userMessageContainerHtml);
+
+            var editButtonHtml = '<button type="button" class="btn btn-primary" id="editUserMessageButton">수정</button>';
+            $('#saveUserMessageButton').replaceWith(editButtonHtml);
         });
 
         function validateForm() {
@@ -163,29 +157,6 @@
                 return true;
             }
         }
-
-        // 하고싶은말 변경
-        function validateMessageForm() {
-            var newUserMessage = $('#newUserMessage').val();
-
-            // 여기서는 간단한 유효성 검사만 수행 (비어있는지만 확인)
-            if (!newUserMessage) {
-                alert("하고 싶은 말을 입력하세요.");
-                return false;
-            }
-
-            // 수정된 내용을 적용 (이 부분은 서버로 전송하거나 데이터베이스에 저장하는 등으로 변경 가능)
-            $('#userMessage').text(newUserMessage);
-
-            alert("하고 싶은 말이 변경되었습니다.");
-            $('#changeMessageModal').modal('hide');
-            return true;
-        }
-
-        //ID에서 받아온...이름과, 이메일, 하고싶은말
-        document.getElementById("userName").innerText = " ID.이름";
-        document.getElementById("userEmail").innerText = "ID.이메일";
-        document.getElementById("userMessage").innerText = "ID.하고싶은말";
     </script>
 
 </body>
