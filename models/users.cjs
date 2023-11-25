@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "refreshTokens"
       });
+      this.hasMany(models.SocialAccounts, {
+        foreignKey: "userId",
+        as: "socialAccounts"
+      });
     }
   }
   Users.init(
