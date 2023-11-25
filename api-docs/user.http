@@ -1,0 +1,32 @@
+@host = http://localhost:3006/api/user
+
+### 회원 정보 조회(GET)
+GET {{host}}/profile
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlhdCI6MTcwMDgzMDU0NiwiZXhwIjoxNzAxNDM1MzQ2fQ.pJSwvKsFU1zd91OK4rEB3-CSl0KFkxhqW1wtfBQ5abc
+// Bearer your_jwt_token
+
+
+### 회원 정보 수정(PUT)
+PUT {{host}}/profile
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlhdCI6MTcwMDgyOTE2NiwiZXhwIjoxNzAwODMyNzY2fQ.v4mxngW4458jD19qOrjgzoavO5XkQsQeUYyjjtaYm8E
+// Bearer your_jwt_token
+Content-Type: application/json
+
+{
+    "name": "이름",
+    "email": "aaaa@example.com",
+    "description": "자기소개 한 줄"
+}
+
+
+
+### 비밀번호 수정(POST)
+POST {{host}}/password
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlhdCI6MTcwMDgyOTE2NiwiZXhwIjoxNzAwODMyNzY2fQ.v4mxngW4458jD19qOrjgzoavO5XkQsQeUYyjjtaYm8E
+// Bearer your_jwt_token
+Content-Type: application/json
+
+{
+    "currentPassword": "1234qqqq",
+    "newPassword": "4321qqqq"
+}
