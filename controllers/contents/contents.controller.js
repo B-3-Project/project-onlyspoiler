@@ -116,23 +116,24 @@ export const readDetcontent = async (req, res) => {
     const existsContent = await Contents.findOne({ where: { id: Id } });
 
     if (existsContent === null) {
-      console.log("err:" + existsContent);
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        errorMessage: ErrorMessages.MISSING_USERID
-      });
-      //throw createError(StatusCodes.BAD_REQUEST, ErrorMessages.MISSING_USERID);
+      return failResponseMsg(
+        res,
+        StatusCodes.BAD_REQUEST,
+        ErrorMessages.MISSING_USERID
+      );
     }
 
-    const user = userList.find(
-      user => user.id === Number(existsContent.author_id)
-    );
+    userList.forEach(x => {
+      console.log(x);
+    });
+
+    const user = userList.find(user => user.id === existsContent.author_id);
 
     const resultList = {
       id: existsContent.id,
       title: existsContent.title,
       content: existsContent.content,
-      author: user.name,
+      author: user ? user.name : null,
       createdAt: existsContent.createdAt
     };
 
@@ -167,16 +168,11 @@ export const updateDetcontent = async (req, res) => {
 
     //productId 공백 확인!!
     if (existsContent === null) {
-      let errMsg = ErrorMessages.INVALID_DATA;
-
-      if (Id.length > 0) {
-        errMsg = ErrorMessages.MISSING_USERID;
-      }
-
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        errorMessage: errMsg
-      });
+      return failResponseMsg(
+        res,
+        StatusCodes.BAD_REQUEST,
+        ErrorMessages.MISSING_USERID
+      );
     }
 
     // 사용자iD 일치여부
@@ -197,14 +193,14 @@ export const updateDetcontent = async (req, res) => {
         data: updateContent
       });
     } else {
-      failResponseMsg(
+      return failResponseMsg(
         res,
         StatusCodes.UNAUTHORIZED,
         ErrorMessages.UNAUTHORIZED_CONTENT
       );
     }
   } catch (error) {
-    failResponseMsg(
+    return failResponseMsg(
       res,
       StatusCodes.INTERNAL_SERVER_ERROR,
       ErrorMessages.SERVER_ERROR + error
@@ -221,16 +217,11 @@ export const deleteDetcontent = async (req, res) => {
   try {
     //productId 공백 확인
     if (existsContent === null) {
-      let errMsg = ErrorMessages.INVALID_DATA;
-
-      if (Id.length > 0) {
-        errMsg = ErrorMessages.MISSING_USERID;
-      }
-
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        errorMessage: errMsg
-      });
+      return failResponseMsg(
+        res,
+        StatusCodes.BAD_REQUEST,
+        ErrorMessages.MISSING_USERID
+      );
     }
 
     // 사용자ID 일치여부
@@ -244,14 +235,14 @@ export const deleteDetcontent = async (req, res) => {
         message: SuccessMessages.DELETE_SUCCESS
       });
     } else {
-      failResponseMsg(
+      return failResponseMsg(
         res,
         StatusCodes.UNAUTHORIZED,
         ErrorMessages.UNAUTHORIZED_CONTENT
       );
     }
   } catch (error) {
-    failResponseMsg(
+    return failResponseMsg(
       res,
       StatusCodes.INTERNAL_SERVER_ERROR,
       ErrorMessages.SERVER_ERROR + error
