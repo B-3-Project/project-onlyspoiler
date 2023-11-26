@@ -92,7 +92,7 @@
             <button type="button" class="btn btn-primary" id="mypageButton">
                 마이페이지
             </button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#write">
+            <button id='writeButton' type="button" class="btn btn-primary" data-toggle="modal" data-target="#write">
                 글쓰기
             </button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login" id="loginButton">
@@ -102,7 +102,7 @@
                 로그아웃
             </button>
 
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#회원가입">
+            <button id='registerButton' type="button" class="btn btn-primary" data-toggle="modal" data-target="#회원가입">
                 회원가입
             </button>
 
@@ -229,12 +229,13 @@
                             <label for="confirmPassword">비밀번호 확인:</label>
                             <input type="password" class="form-control" id="confirmPassword" required>
                         </div>
-                    </form>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary" onclick="submitRegistration()">가입하기</button>
+                    <button type="submit" class="btn btn-primary">가입하기</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -252,11 +253,47 @@
         if (accessToken) {
             $('#loginButton').hide();
             $('#logoutButton').show();
+            $('#registerButton').hide();
+            $('#mypageButton').show();
+            $('#writeButton').show();
         } else {
             $('#loginButton').show();
             $('#logoutButton').hide();
+            $('#mypageButton').hide();
+            $('#writeButton').hide();
         }
     }
+
+    // 회원가입 API 연결
+    document.querySelector('#registrationForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.querySelector('#registrationForm #username').value;
+        const email = document.querySelector('#registrationForm #email').value;
+        console.log(email);
+        const password = document.querySelector('#registrationForm #password').value;
+        const confirmPassword = document.querySelector('#registrationForm #confirmPassword').value;
+
+        const response = await fetch('http://localhost:3006/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: username, email, password, passwordConfirm: confirmPassword })
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            alert(responseData.message);
+            $('#register').modal('hide');
+
+            location.reload();
+        } else {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.error.message}`);
+        }
+    });
+
 
     // 로그인 API 연결
     document.querySelector('#login form').addEventListener('submit', async (event) => {
