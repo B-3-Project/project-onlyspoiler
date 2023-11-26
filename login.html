@@ -22,7 +22,7 @@
             margin-bottom: 20px;
             height: 150px;
         }
-
+        
         .button-group {
             justify-content: flex-end;
             align-items: center;
@@ -31,7 +31,7 @@
             margin-bottom: 80px;
             right: 20px;
         }
-
+        
         .head-img {
             display: flex;
             justify-content: center;
@@ -44,9 +44,6 @@
         
         .content-button-group {
             flex-direction: column;
-
-        .content-button {
-
             position: relative;
             margin-top: 200px;
             height: 100vh;
@@ -108,7 +105,6 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#회원가입">
                 회원가입
             </button>
-            <button onclick="location.href='http://localhost:3006/api/login-naver'">네이버 로그인</button>
 
         </div>
 
@@ -129,8 +125,8 @@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">글쓰기:</h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                 </div>
                 <div class="modal-body">
                     <form id="postForm">
@@ -163,8 +159,8 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="loginModalLabel">로그인</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                 </div>
                 <div class="modal-body">
                     <form>
@@ -176,8 +172,7 @@
                             <label for="password">비밀번호:</label>
                             <input type="password" class="form-control" id="password">
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="openForgotPasswordModal()">비밀번호
-                            찾기</button>
+                        <button type="button" class="btn btn-primary" onclick="openForgotPasswordModal()">비밀번호 찾기</button>
                         <button type="submit" class="btn btn-primary">로그인</button>
                     </form>
                 </div>
@@ -185,15 +180,14 @@
         </div>
     </div>
 
-    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="forgotPasswordModalLabel">비밀번호 찾기</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                 </div>
                 <div class="modal-body">
                     <p>블라블라블라.</p>
@@ -204,15 +198,14 @@
 
     <!-- 회원가입 모달 -->
 
-    <div class="modal fade" id="회원가입" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="회원가입" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">회원가입</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                 </div>
                 <div class="modal-body">
                     <form id="registrationForm">
@@ -245,22 +238,22 @@
 </body>
 
 <script>
-    document.getElementById("mypageButton").addEventListener("click", function () {
+    document.getElementById("mypageButton").addEventListener("click", function() {
         location.href = "./mypage.html";
     });
 
     function logout() {
+        // 로그아웃 API 호출
 
-        //logout api
-
+        // 로그아웃 성공 시 버튼 변경
         $('#loginButton').show();
         $('#logoutButton').hide();
     }
 
     function login() {
+        // 로그인 API 호출
 
-        //login api
-
+        // 로그인 성공 시 버튼 변경
         $('#loginButton').hide();
         $('#logoutButton').show();
     }
@@ -295,6 +288,14 @@
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
+    document.addEventListener("DOMContentLoaded", function() {
+
+        var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        existingPosts.forEach(function(post) {
+            addButtonAndModal(post.title, post.content, post.id, post.username, "buttonContainer");
+        });
+    });
 
     function submitPost() {
         var postTitle = $('#content-title').val();
@@ -304,6 +305,20 @@
             var postId = "post" + new Date().getTime();
             var postTime = formatTime();
             var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '<br><em>작성 시간: ' + postTime + '</em></p>';
+
+            var postData = {
+                title: postTitle,
+                content: postContent,
+                id: postId,
+                username: "Username",
+                time: postTime
+            };
+
+            var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            existingPosts.push(postData);
+
+            localStorage.setItem('posts', JSON.stringify(existingPosts));
 
             addButtonAndModal(postTitle, postContent, postId, "Username", "buttonContainer");
 
@@ -322,7 +337,7 @@
 
         // 버튼 HTML 생성
         var buttonHtml =
-            '<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#' + modalId + '" style="width: 350px; height: 300px; ">' +
+            '<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#' + modalId + '" style="width: 350px; height: 300px; " data-post-id="' + postId + '">' +
             '   <div class="card text-bg-light mb-3" style="width: 350px; height: 250px;" id="' + cardId + '">' +
             '       <div class="card-header">' + username + '</div>' +
             '       <div class="card-body">' +
@@ -368,8 +383,6 @@
         $("#modalContainer").append(modalHtml);
     }
 
-
-
     function deletePost(modalId, postId) {
         // 모달 닫기
         $("#" + modalId).modal('hide');
@@ -377,12 +390,24 @@
         setTimeout(function() {
             var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
             if (confirmDelete) {
+                // 버튼의 데이터 속성에서 게시물 ID를 가져옴
+                var postButton = $("#buttonContainer button[data-target='#" + modalId + "'][data-post-id='" + postId + "']");
+                var postButtonId = postButton.attr("data-post-id");
+
+                // localStorage에서 게시물 삭제
+                var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+                var updatedPosts = existingPosts.filter(function(post) {
+                    return post.id !== postButtonId;
+                });
+                localStorage.setItem('posts', JSON.stringify(updatedPosts));
+
                 // 모달 및 버튼 삭제
                 $("#" + modalId).remove();
-                $("#buttonContainer button[data-target='#" + modalId + "']").remove();
+                postButton.remove();
             }
         }, 150);
     }
+
 
     function editPostAndSaveButton(modalId, postId) {
         // 모달 콘텐츠를 TEXTAREA로 변경
