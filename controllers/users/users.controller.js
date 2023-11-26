@@ -27,7 +27,7 @@ export const getUserProfile = async (req, res, next) => {
             message: SuccessMessages.PROFILE_LODING_SUCCESS,
             data: {
                 id: userId,
-                username: user.username,
+                username: user.name,
                 description: user.description || ""
             }
         });
@@ -61,7 +61,7 @@ export const putUserProfile = async (req, res, next) => {
             message: SuccessMessages.PROFILE_MODIFY_SUCCESS,
             data: {
                 id: userId,
-                username: updateUser.username,
+                username: updateUser.name,
                 description: updateUser.description || ""
             }
         });
