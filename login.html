@@ -14,7 +14,7 @@
     <style>
         .title-group {
             display: flex;
-            justify-content: flex;
+            justify-content: flex-end;
             align-items: center;
             align-content: center;
             margin-left: auto;
@@ -24,7 +24,7 @@
         }
         
         .button-group {
-            justify-content: flex;
+            justify-content: flex-end;
             align-items: center;
             align-content: center;
             margin-left: auto;
@@ -42,9 +42,43 @@
             transform: translateX(-50%);
         }
         
-        .content-button {
+        .content-button-group {
+            flex-direction: column;
             position: relative;
             margin-top: 200px;
+            height: 100vh;
+            align-items: center;
+        }
+        
+        .list-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+        
+        .list-group-item {
+            flex: 0 0 calc(20% - 10px);
+            margin-bottom: 10px;
+            border: none;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+        
+        .card-body {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        
+        .modal-body {
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        
+        .modal-header {
+            overflow-y: auto;
+            max-height: 100px;
         }
     </style>
 </head>
@@ -56,32 +90,33 @@
         <div class="button-group" id="button-group">
 
             <button type="button" class="btn btn-primary" id="mypageButton">
-            마이페이지
-          </button>
+                마이페이지
+            </button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#write">
-            글쓰기
+                글쓰기
             </button>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login" id="loginButton">
-            로그인
-         </button>
+                로그인
+            </button>
             <button type="button" class="btn btn-primary" style="display: none;" id="logoutButton" onclick="logout()">
-            로그아웃
-         </button>
+                로그아웃
+            </button>
 
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#회원가입">
-            회원가입
-         </button>
+                회원가입
+            </button>
 
         </div>
 
     </div>
-    <div class="content-button">
-        <div class="list-group" id="buttonContainer">
-        </div>
 
+    <div class="content-button-group">
+        <div class="list-group d-flex flex-row" id="buttonContainer">
+        </div>
         <div id="modalContainer">
         </div>
     </div>
+
     <!-- 글쓰기 모달-->
 
     <div class="modal fade" id="write" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -102,6 +137,9 @@
                         <div class="form-group">
                             <label for="modalContent">글 내용:</label>
                             <textarea class="form-control" id="modalContent" rows="3"></textarea>
+                        </div>
+                        <div>
+
                         </div>
                     </form>
                 </div>
@@ -205,17 +243,17 @@
     });
 
     function logout() {
+        // 로그아웃 API 호출
 
-        //logout api
-
+        // 로그아웃 성공 시 버튼 변경
         $('#loginButton').show();
         $('#logoutButton').hide();
     }
 
     function login() {
+        // 로그인 API 호출
 
-        //login api
-
+        // 로그인 성공 시 버튼 변경
         $('#loginButton').hide();
         $('#logoutButton').show();
     }
@@ -239,17 +277,50 @@
         $('#회원가입').modal('hide');
     }
 
+    function formatTime() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = (now.getMonth() + 1).toString().padStart(2, '0');
+        var day = now.getDate().toString().padStart(2, '0');
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        var seconds = now.getSeconds().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+
+        var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        existingPosts.forEach(function(post) {
+            addButtonAndModal(post.title, post.content, post.id, post.username, "buttonContainer");
+        });
+    });
+
     function submitPost() {
         var postTitle = $('#content-title').val();
         var postContent = $('#modalContent').val();
 
         if (postContent.trim() !== '') {
             var postId = "post" + new Date().getTime();
-            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '</p>';
+            var postTime = formatTime();
+            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '<br><em>작성 시간: ' + postTime + '</em></p>';
 
-            $("#commentContainer").append(postHtml);
+            var postData = {
+                title: postTitle,
+                content: postContent,
+                id: postId,
+                username: "Username",
+                time: postTime
+            };
 
-            addButtonAndModal(postTitle, postContent, postId);
+            var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            existingPosts.push(postData);
+
+            localStorage.setItem('posts', JSON.stringify(existingPosts));
+
+            addButtonAndModal(postTitle, postContent, postId, "Username", "buttonContainer");
 
             $('#content-title').val('');
             $('#modalContent').val('');
@@ -259,12 +330,22 @@
         }
     }
 
-    function addButtonAndModal(buttonText, modalContent, postId) {
+    function addButtonAndModal(buttonText, modalContent, postId, username, newsFeedContainerId) {
         // 버튼과 모달을 위한 고유한 ID 생성
         var modalId = "modal" + new Date().getTime();
+        var cardId = "card" + new Date().getTime();
 
         // 버튼 HTML 생성
-        var buttonHtml = '<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#' + modalId + '">' + buttonText + '</button>';
+        var buttonHtml =
+            '<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#' + modalId + '" style="width: 350px; height: 300px; " data-post-id="' + postId + '">' +
+            '   <div class="card text-bg-light mb-3" style="width: 350px; height: 250px;" id="' + cardId + '">' +
+            '       <div class="card-header">' + username + '</div>' +
+            '       <div class="card-body">' +
+            '           <h5 class="card-title">' + buttonText + '</h5>' +
+            '           <p class="card-text">' + modalContent + '</p>' +
+            '       </div>' +
+            '   </div>' +
+            '</button>';
 
         // 모달 HTML 생성
         var modalHtml =
@@ -273,12 +354,14 @@
             '       <div class="modal-content">' +
             '           <div class="modal-header">' +
             '               <h5 class="modal-title">' + buttonText + '</h5>' +
+            '               <p><em>작성자: ' + username + '</em></p>' +
             '               <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
             '                   <span aria-hidden="true">&times;</span>' +
             '               </button>' +
             '           </div>' +
-            '           <div class="modal-body">' +
-            '               <p>' + modalContent + '</p>' +
+            '          <div class="modal-body">' +
+            '               <p id="modalContent_' + postId + '">' + modalContent + '</p>' +
+            '               <p><em>작성 시간: ' + formatTime() + '</em></p>' +
             '               <div class="form-group">' +
             '                   <label for="comment">댓글:</label>' +
             '                   <textarea class="form-control" id="comment_' + postId + '" rows="3"></textarea>' +
@@ -288,21 +371,114 @@
             '           </div>' +
             '           <div class="modal-footer">' +
             '               <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>' +
+            '               <button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>' +
+            '               <button type="button" class="btn btn-danger" onclick="deletePost(\'' + modalId + '\', \'' + postId + '\')">삭제</button>' +
             '           </div>' +
             '       </div>' +
             '   </div>' +
             '</div>';
 
-        $("#buttonContainer").prepend(buttonHtml);
+        //생성
+        $("#" + newsFeedContainerId).prepend(buttonHtml);
         $("#modalContainer").append(modalHtml);
     }
 
+    function deletePost(modalId, postId) {
+        // 모달 닫기
+        $("#" + modalId).modal('hide');
+
+        setTimeout(function() {
+            var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
+            if (confirmDelete) {
+                // 버튼의 데이터 속성에서 게시물 ID를 가져옴
+                var postButton = $("#buttonContainer button[data-target='#" + modalId + "'][data-post-id='" + postId + "']");
+                var postButtonId = postButton.attr("data-post-id");
+
+                // localStorage에서 게시물 삭제
+                var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
+                var updatedPosts = existingPosts.filter(function(post) {
+                    return post.id !== postButtonId;
+                });
+                localStorage.setItem('posts', JSON.stringify(updatedPosts));
+
+                // 모달 및 버튼 삭제
+                $("#" + modalId).remove();
+                postButton.remove();
+            }
+        }, 150);
+    }
+
+
+    function editPostAndSaveButton(modalId, postId) {
+        // 모달 콘텐츠를 TEXTAREA로 변경
+        var modalContentParagraph = $("#modalContent_" + postId);
+        var modalContent = modalContentParagraph.text().trim();
+        var modalTextAreaHtml = '<textarea class="form-control" id="editedContent_' + postId + '" rows="3">' + modalContent + '</textarea>';
+        modalContentParagraph.replaceWith(modalTextAreaHtml);
+
+        // "수정" 버튼 대신 "저장" 버튼 생성
+        var saveButtonHtml = '<button type="button" class="btn btn-success" onclick="saveEditedContent(\'' + modalId + '\', \'' + postId + '\')">저장</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-warning').replaceWith(saveButtonHtml);
+    }
+
+    function saveEditedContent(modalId, postId) {
+        var editedContent = $("#editedContent_" + postId).val();
+
+        // 수정된 내용을 원래 내용에 업데이트
+        var modalTextArea = $("#editedContent_" + postId);
+        var modalContentParagraphHtml = '<p id="modalContent_' + postId + '">' + editedContent + '</p>';
+        modalTextArea.replaceWith(modalContentParagraphHtml);
+
+        // "저장" 버튼을 다시 "수정" 버튼으로 변경
+        var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);
+    }
+
     function submitComment(postId) {
-        var comment = $('#comment_' + postId).val();
-        $('#commentContainer_' + postId).append('<p>' + comment + '</p>');
+        var comment = $('#comment_' + postId).val().trim();
+        if (comment === '') {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        var commentId = 'comment_' + postId + '_' + Date.now();
+        var commentHtml =
+            '<div id="' + commentId + '" class="comment-container">' +
+            '<p class="comment-text" style="margin-bottom: 0;">' + comment +
+            '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+            '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+            '</div>';
+
+        $('#commentContainer_' + postId).append(commentHtml);
         $('#comment_' + postId).val('');
     }
+
+    $('#modalContainer').on('click', '.delete-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        $('#' + commentId).remove();
+    });
+
+    $('#modalContainer').on('click', '.edit-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        var currentCommentContainer = $('#' + commentId);
+        var currentComment = currentCommentContainer.find('.comment-text').text();
+
+        var editedComment = prompt('Edit your comment:', currentComment);
+
+        if (editedComment !== null) {
+            var editedCommentHtml =
+                '<div id="' + commentId + '" class="comment-container">' +
+                '<p class="comment-text" style="margin-bottom: 0;">' + editedComment +
+                '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+                '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+                '</div>';
+            currentCommentContainer.html(editedCommentHtml);
+        }
+    });
 </script>
+
 
 
 </html>

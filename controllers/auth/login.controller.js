@@ -40,6 +40,10 @@ const handleLogin = async (email, password) => {
     );
   }
 
+  if (!user.verified) {
+    throw createError(StatusCodes.UNAUTHORIZED, ErrorMessages.UNVERIFIED_EMAIL);
+  }
+
   return user;
 };
 
