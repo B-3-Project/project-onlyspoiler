@@ -28,6 +28,7 @@ export const ErrorMessages = deepFreeze({
 
   // 회원정보 수정
   PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+  UNEXPECTED_ERROR: "예상치 못한 에러입니다. 관리자에게 문의하세요.",
 
   // 댓글
   MISSING_CONTENTID: "게시물 조회에 실패하였습니다.",

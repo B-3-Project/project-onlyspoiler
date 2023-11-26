@@ -1,7 +1,6 @@
 import express from "express";
 import { ROUTES } from "../../constants/profile.constant.js";
 import { getUserProfile, putUserProfile, changePassword } from "../../controllers/users/users.controller.js"
-// import { hashPassword } from "../../models/users.cjs"
 import { verifyToken, authenticateUser } from "../../middlewares/auth/auth.middleware.js";
 const router = express.Router();
 
