@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import db from "../../models/index.cjs";
-// import { hashPassword } from "../../models/users.cjs";
 const { Users } = db;
 
 // 상태/에러 메세지 연결
@@ -93,9 +92,7 @@ export const changePassword = async (req, res, next) => {
             );
         }
 
-        const hashedNewPassword = await hashPassword({ password: newPassword });
-
-        await user.update({ password: hashedNewPassword });
+        await user.update({ password: newPassword });
 
         res.status(StatusCodes.OK).json({
             success: true,
