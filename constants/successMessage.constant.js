@@ -21,5 +21,8 @@ export const SuccessMessages = deepFreeze({
   COMMENT_SUCCESS: "댓글이 작성되었습니다.",
   COMMENT_READ_SUCCESS: "댓글 전체 조회에 성공했습니다.",
   COMMENT_UPT_SUCCESS: "댓글이 수정되었습니다.",
-  COMMENT_DEL_SUCCESS: "댓글이 삭제되었습니다."
+  COMMENT_DEL_SUCCESS: "댓글이 삭제되었습니다.",
+
+  // 비밀번호 조회
+  PASSWORD_MODIFY_SUCCESS: "비밀번호 변경에 성공했습니다."
 });

@@ -28,9 +28,16 @@ export const ErrorMessages = deepFreeze({
 
   // 회원정보 수정
   PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+  UNEXPECTED_ERROR: "예상치 못한 에러입니다. 관리자에게 문의하세요.",
 
   // 댓글
   MISSING_CONTENTID: "게시물 조회에 실패하였습니다.",
   UNAUTHORIZED_COMMENT: "댓글을 수정할 권한이 없습니다.",
-  INVALID_USERID_POST: "댓글의 게시물 또는 사용자ID 조회에 실패하였습니다."
+  INVALID_USERID_POST: "댓글의 게시물 또는 사용자ID 조회에 실패하였습니다.",
+  PRORILE_NOT_MODIFY: "수정된 내용이 없습니다.",
+  UNEXPECTED_ERROR: "예상치 못한 에러입니다. 관리자에게 문의하세요.",
+
+  //비밀번호 수정
+  INVALID_USER_INFO: "회원정보를 찾을 수 없습니다.",
+  INVALID_CURRENT_PASSWORD: "현재 비밀번호가 일치하지 않습니다."
 });

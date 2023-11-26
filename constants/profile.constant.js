@@ -1,5 +1,6 @@
 import { deepFreeze } from "../utils/deepFreeze.js";
 
 export const ROUTES = deepFreeze({
-  PROFILE: "/user/profile"
+  PROFILE: "/user/profile",
+  CHANGEPASSWORD: "/user/password"
 });

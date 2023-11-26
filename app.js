@@ -5,6 +5,7 @@ import contentsRouter from "./routers/contents/contents.router.js";
 import commentsRouter from "./routers/comments/comments.router.js";
 import mailRouter from "./routers/auth/mail.router.js";
 import socialRouter from "./routers/auth/socialLogin.router.js";
+import usersRouter from "./routers/users/users.router.js"
 import { handleServerError } from "./middlewares/handleServerError.middleware.js";
 import cors from "cors";
 
@@ -19,7 +20,8 @@ app.use("/api", [
   contentsRouter,
   mailRouter,
   socialRouter,
-  commentsRouter
+  commentsRouter,
+  usersRouter
 ]);
 app.use(handleServerError);
 
