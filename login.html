@@ -22,7 +22,7 @@
             margin-bottom: 20px;
             height: 150px;
         }
-        
+
         .button-group {
             justify-content: flex-end;
             align-items: center;
@@ -31,7 +31,7 @@
             margin-bottom: 80px;
             right: 20px;
         }
-        
+
         .head-img {
             display: flex;
             justify-content: center;
@@ -41,7 +41,7 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        
+
         .content-button-group {
             flex-direction: column;
             position: relative;
@@ -49,14 +49,14 @@
             height: 100vh;
             align-items: center;
         }
-        
+
         .list-group {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
             gap: 10px;
         }
-        
+
         .list-group-item {
             flex: 0 0 calc(20% - 10px);
             margin-bottom: 10px;
@@ -65,17 +65,17 @@
             align-items: center;
             display: flex;
         }
-        
+
         .card-body {
             overflow-y: auto;
             max-height: 100%;
         }
-        
+
         .modal-body {
             overflow-y: auto;
             max-height: 400px;
         }
-        
+
         .modal-header {
             overflow-y: auto;
             max-height: 100px;
@@ -125,8 +125,8 @@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">글쓰기:</h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="postForm">
@@ -159,35 +159,38 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="loginModalLabel">로그인</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id='login'>
                         <div class="form-group">
                             <label for="email">이메일</label>
-                            <input type="text" class="form-control" id="email">
+                            <input type="text" class="form-control" id="email" name="email">
                         </div>
                         <div class="form-group">
                             <label for="password">비밀번호:</label>
-                            <input type="password" class="form-control" id="password">
+                            <input type="password" class="form-control" id="password" name="password">
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="openForgotPasswordModal()">비밀번호 찾기</button>
+                        <button type="button" class="btn btn-primary" onclick="openForgotPasswordModal()">비밀번호
+                            찾기</button>
                         <button type="submit" class="btn btn-primary">로그인</button>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="forgotPasswordModalLabel">비밀번호 찾기</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <p>블라블라블라.</p>
@@ -198,14 +201,15 @@
 
     <!-- 회원가입 모달 -->
 
-    <div class="modal fade" id="회원가입" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="회원가입" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">회원가입</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <form id="registrationForm">
@@ -238,7 +242,7 @@
 </body>
 
 <script>
-    document.getElementById("mypageButton").addEventListener("click", function() {
+    document.getElementById("mypageButton").addEventListener("click", function () {
         location.href = "./mypage.html";
     });
 
@@ -257,6 +261,27 @@
         $('#loginButton').hide();
         $('#logoutButton').show();
     }
+
+    // 로그인 API 연결
+    document.querySelector('#login form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const email = document.querySelector('#email').value;
+        const password = document.querySelector('#password').value;
+
+        const response = await fetch('http://localhost:3006/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+            $('#loginButton').hide();
+            $('#logoutButton').show();
+        }
+    })
 
 
     function submitRegistration() {
@@ -288,11 +313,11 @@
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
 
         var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
 
-        existingPosts.forEach(function(post) {
+        existingPosts.forEach(function (post) {
             addButtonAndModal(post.title, post.content, post.id, post.username, "buttonContainer");
         });
     });
@@ -387,7 +412,7 @@
         // 모달 닫기
         $("#" + modalId).modal('hide');
 
-        setTimeout(function() {
+        setTimeout(function () {
             var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
             if (confirmDelete) {
                 // 버튼의 데이터 속성에서 게시물 ID를 가져옴
@@ -396,7 +421,7 @@
 
                 // localStorage에서 게시물 삭제
                 var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
-                var updatedPosts = existingPosts.filter(function(post) {
+                var updatedPosts = existingPosts.filter(function (post) {
                     return post.id !== postButtonId;
                 });
                 localStorage.setItem('posts', JSON.stringify(updatedPosts));
@@ -453,13 +478,13 @@
         $('#comment_' + postId).val('');
     }
 
-    $('#modalContainer').on('click', '.delete-comment', function() {
+    $('#modalContainer').on('click', '.delete-comment', function () {
         var postId = $(this).data('post-id');
         var commentId = $(this).data('comment-id');
         $('#' + commentId).remove();
     });
 
-    $('#modalContainer').on('click', '.edit-comment', function() {
+    $('#modalContainer').on('click', '.edit-comment', function () {
         var postId = $(this).data('post-id');
         var commentId = $(this).data('comment-id');
         var currentCommentContainer = $('#' + commentId);
