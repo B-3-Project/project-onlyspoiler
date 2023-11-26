@@ -12,6 +12,7 @@ export const ErrorMessages = deepFreeze({
   INVALID_STATUS: "상태 값이 잘못되었습니다.",
   USER_NOT_FOUND: "해당 이메일을 가진 사용자를 찾을 수 없습니다.",
   INVALID_LOGIN_INFO: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+  UNVERIFIED_EMAIL: "이메일 인증이 필요합니다.",
   SERVER_ERROR: "서버 내부 오류가 발생하였습니다.",
   MISSING_TOKEN: "헤더에 유효한 토큰이 없습니다.",
   INVALID_USER: "유효한 사용자가 아닙니다.",
