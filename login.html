@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>메인페이지</title>
+
+
+    <style>
+        .title-group {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            align-content: center;
+            margin-left: auto;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            height: 150px;
+        }
+
+        .button-group {
+            justify-content: flex-end;
+            align-items: center;
+            align-content: center;
+            margin-left: auto;
+            margin-bottom: 80px;
+            right: 20px;
+        }
+
+        .head-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            background-color: red;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .content-button-group {
+            flex-direction: column;
+
+        .content-button {
+
+            position: relative;
+            margin-top: 200px;
+            height: 100vh;
+            align-items: center;
+        }
+        
+        .list-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+        
+        .list-group-item {
+            flex: 0 0 calc(20% - 10px);
+            margin-bottom: 10px;
+            border: none;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+        
+        .card-body {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        
+        .modal-body {
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        
+        .modal-header {
+            overflow-y: auto;
+            max-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="image\보람삼조.png" alt="이미지 설명" class="head-img">
+    <div class="title-group" id="title">
+
+        <div class="button-group" id="button-group">
+
+            <button type="button" class="btn btn-primary" id="mypageButton">
+                마이페이지
+            </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#write">
+                글쓰기
+            </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login" id="loginButton">
+                로그인
+            </button>
+            <button type="button" class="btn btn-primary" style="display: none;" id="logoutButton" onclick="logout()">
+                로그아웃
+            </button>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#회원가입">
+                회원가입
+            </button>
+            <button onclick="location.href='http://localhost:3006/api/login-naver'">네이버 로그인</button>
+
+        </div>
+
+    </div>
+
+    <div class="content-button-group">
+        <div class="list-group d-flex flex-row" id="buttonContainer">
+        </div>
+        <div id="modalContainer">
+        </div>
+    </div>
+
+    <!-- 글쓰기 모달-->
+
+    <div class="modal fade" id="write" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">글쓰기:</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="postForm">
+                        <div class="form-group">
+                            <label for="content-title">제목:</label>
+                            <textarea class="form-control" id="content-title" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalContent">글 내용:</label>
+                            <textarea class="form-control" id="modalContent" rows="3"></textarea>
+                        </div>
+                        <div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitPost()">글 등록</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로그인 모달 -->
+
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">로그인</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="email">이메일</label>
+                            <input type="text" class="form-control" id="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">비밀번호:</label>
+                            <input type="password" class="form-control" id="password">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="openForgotPasswordModal()">비밀번호
+                            찾기</button>
+                        <button type="submit" class="btn btn-primary">로그인</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">비밀번호 찾기</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>블라블라블라.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 모달 -->
+
+    <div class="modal fade" id="회원가입" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">회원가입</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registrationForm">
+                        <div class="form-group">
+                            <label for="username">사용자 이름:</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">이메일:</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">비밀번호:</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">비밀번호 확인:</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRegistration()">가입하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    document.getElementById("mypageButton").addEventListener("click", function () {
+        location.href = "./mypage.html";
+    });
+
+    function logout() {
+
+        //logout api
+
+        $('#loginButton').show();
+        $('#logoutButton').hide();
+    }
+
+    function login() {
+
+        //login api
+
+        $('#loginButton').hide();
+        $('#logoutButton').show();
+    }
+
+
+    function submitRegistration() {
+        var username = $('#username').val();
+        var email = $('#email').val();
+        var password = $('#password').val();
+        var confirmPassword = $('#confirmPassword').val();
+
+        if (password !== confirmPassword) {
+            alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            return;
+        }
+
+        $('#username').val('');
+        $('#email').val('');
+        $('#password').val('');
+
+        $('#회원가입').modal('hide');
+    }
+
+    function formatTime() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = (now.getMonth() + 1).toString().padStart(2, '0');
+        var day = now.getDate().toString().padStart(2, '0');
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        var seconds = now.getSeconds().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    function submitPost() {
+        var postTitle = $('#content-title').val();
+        var postContent = $('#modalContent').val();
+
+        if (postContent.trim() !== '') {
+            var postId = "post" + new Date().getTime();
+            var postTime = formatTime();
+            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '<br><em>작성 시간: ' + postTime + '</em></p>';
+
+            addButtonAndModal(postTitle, postContent, postId, "Username", "buttonContainer");
+
+            $('#content-title').val('');
+            $('#modalContent').val('');
+            $('#write').modal('hide');
+        } else {
+            alert("글 내용을 입력하세요.");
+        }
+    }
+
+    function addButtonAndModal(buttonText, modalContent, postId, username, newsFeedContainerId) {
+        // 버튼과 모달을 위한 고유한 ID 생성
+        var modalId = "modal" + new Date().getTime();
+        var cardId = "card" + new Date().getTime();
+
+        // 버튼 HTML 생성
+        var buttonHtml =
+            '<button type="button" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#' + modalId + '" style="width: 350px; height: 300px; ">' +
+            '   <div class="card text-bg-light mb-3" style="width: 350px; height: 250px;" id="' + cardId + '">' +
+            '       <div class="card-header">' + username + '</div>' +
+            '       <div class="card-body">' +
+            '           <h5 class="card-title">' + buttonText + '</h5>' +
+            '           <p class="card-text">' + modalContent + '</p>' +
+            '       </div>' +
+            '   </div>' +
+            '</button>';
+
+        // 모달 HTML 생성
+        var modalHtml =
+            '<div class="modal" id="' + modalId + '" tabindex="-1">' +
+            '   <div class="modal-dialog">' +
+            '       <div class="modal-content">' +
+            '           <div class="modal-header">' +
+            '               <h5 class="modal-title">' + buttonText + '</h5>' +
+            '               <p><em>작성자: ' + username + '</em></p>' +
+            '               <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+            '                   <span aria-hidden="true">&times;</span>' +
+            '               </button>' +
+            '           </div>' +
+            '          <div class="modal-body">' +
+            '               <p id="modalContent_' + postId + '">' + modalContent + '</p>' +
+            '               <p><em>작성 시간: ' + formatTime() + '</em></p>' +
+            '               <div class="form-group">' +
+            '                   <label for="comment">댓글:</label>' +
+            '                   <textarea class="form-control" id="comment_' + postId + '" rows="3"></textarea>' +
+            '               </div>' +
+            '               <button type="button" class="btn btn-primary" onclick="submitComment(\'' + postId + '\')">댓글 등록</button>' +
+            '               <div id="commentContainer_' + postId + '"></div>' +
+            '           </div>' +
+            '           <div class="modal-footer">' +
+            '               <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>' +
+            '               <button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>' +
+            '               <button type="button" class="btn btn-danger" onclick="deletePost(\'' + modalId + '\', \'' + postId + '\')">삭제</button>' +
+            '           </div>' +
+            '       </div>' +
+            '   </div>' +
+            '</div>';
+
+        //생성
+        $("#" + newsFeedContainerId).prepend(buttonHtml);
+        $("#modalContainer").append(modalHtml);
+    }
+
+
+
+    function deletePost(modalId, postId) {
+        // 모달 닫기
+        $("#" + modalId).modal('hide');
+
+        setTimeout(function() {
+            var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
+            if (confirmDelete) {
+                // 모달 및 버튼 삭제
+                $("#" + modalId).remove();
+                $("#buttonContainer button[data-target='#" + modalId + "']").remove();
+            }
+        }, 150);
+    }
+
+    function editPostAndSaveButton(modalId, postId) {
+        // 모달 콘텐츠를 TEXTAREA로 변경
+        var modalContentParagraph = $("#modalContent_" + postId);
+        var modalContent = modalContentParagraph.text().trim();
+        var modalTextAreaHtml = '<textarea class="form-control" id="editedContent_' + postId + '" rows="3">' + modalContent + '</textarea>';
+        modalContentParagraph.replaceWith(modalTextAreaHtml);
+
+        // "수정" 버튼 대신 "저장" 버튼 생성
+        var saveButtonHtml = '<button type="button" class="btn btn-success" onclick="saveEditedContent(\'' + modalId + '\', \'' + postId + '\')">저장</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-warning').replaceWith(saveButtonHtml);
+    }
+
+    function saveEditedContent(modalId, postId) {
+        var editedContent = $("#editedContent_" + postId).val();
+
+        // 수정된 내용을 원래 내용에 업데이트
+        var modalTextArea = $("#editedContent_" + postId);
+        var modalContentParagraphHtml = '<p id="modalContent_' + postId + '">' + editedContent + '</p>';
+        modalTextArea.replaceWith(modalContentParagraphHtml);
+
+        // "저장" 버튼을 다시 "수정" 버튼으로 변경
+        var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);
+    }
+
+    function submitComment(postId) {
+        var comment = $('#comment_' + postId).val().trim();
+        if (comment === '') {
+            alert("댓글 내용을 입력하세요.");
+            return;
+        }
+
+        var commentId = 'comment_' + postId + '_' + Date.now();
+        var commentHtml =
+            '<div id="' + commentId + '" class="comment-container">' +
+            '<p class="comment-text" style="margin-bottom: 0;">' + comment +
+            '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+            '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+            '</div>';
+
+        $('#commentContainer_' + postId).append(commentHtml);
+        $('#comment_' + postId).val('');
+    }
+
+    $('#modalContainer').on('click', '.delete-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        $('#' + commentId).remove();
+    });
+
+    $('#modalContainer').on('click', '.edit-comment', function() {
+        var postId = $(this).data('post-id');
+        var commentId = $(this).data('comment-id');
+        var currentCommentContainer = $('#' + commentId);
+        var currentComment = currentCommentContainer.find('.comment-text').text();
+
+        var editedComment = prompt('Edit your comment:', currentComment);
+
+        if (editedComment !== null) {
+            var editedCommentHtml =
+                '<div id="' + commentId + '" class="comment-container">' +
+                '<p class="comment-text" style="margin-bottom: 0;">' + editedComment +
+                '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+                '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+                '</div>';
+            currentCommentContainer.html(editedCommentHtml);
+        }
+    });
+</script>
+
+
+
+</html>
