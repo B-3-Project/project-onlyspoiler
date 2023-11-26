@@ -98,7 +98,7 @@
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#login" id="loginButton">
                 로그인
             </button>
-            <button type="button" class="btn btn-primary" style="display: none;" id="logoutButton" onclick="logout()">
+            <button type="button" class="btn btn-primary" style="display: none;" id="logoutButton">
                 로그아웃
             </button>
 
@@ -246,20 +246,16 @@
         location.href = "./mypage.html";
     });
 
-    function logout() {
-        // 로그아웃 API 호출
+    window.onload = function () {
+        const accessToken = localStorage.getItem('accessToken');
 
-        // 로그아웃 성공 시 버튼 변경
-        $('#loginButton').show();
-        $('#logoutButton').hide();
-    }
-
-    function login() {
-        // 로그인 API 호출
-
-        // 로그인 성공 시 버튼 변경
-        $('#loginButton').hide();
-        $('#logoutButton').show();
+        if (accessToken) {
+            $('#loginButton').hide();
+            $('#logoutButton').show();
+        } else {
+            $('#loginButton').show();
+            $('#logoutButton').hide();
+        }
     }
 
     // 로그인 API 연결
@@ -278,8 +274,42 @@
         });
 
         if (response.ok) {
-            $('#loginButton').hide();
-            $('#logoutButton').show();
+            const responseData = await response.json();
+            alert(responseData.message);
+            $('#login').modal('hide');
+
+            localStorage.setItem('accessToken', responseData.data.accessToken);
+            localStorage.setItem('refreshToken', responseData.data.refreshToken);
+
+            location.reload();
+        } else {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.error.message}`);
+        }
+    })
+
+    // 로그아웃 API 연결
+    document.querySelector('#logoutButton').addEventListener('click', async (event) => {
+        const response = await fetch('http://localhost:3006/api/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            },
+            body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') })
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            alert(responseData.message);
+
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+
+            location.reload();
+        } else {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.error.message}`);
         }
     })
 
