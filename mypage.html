@@ -1,164 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>마이페이지</title>
 
     <style>
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vh;
-        }
-        
-        .row {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .col {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .card {
-            border-radius: 20px;
-            margin-top: 50px;
-        }
-        
-        .card-img-top {
-            max-height: 200px;
-            border-radius: 15px;
-        }
-        
-        .list-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vh;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .col {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card {
+        border-radius: 20px;
+        margin-top: 50px;
+      }
+
+      .card-img-top {
+        max-height: 200px;
+        border-radius: 15px;
+      }
+
+      .list-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="card" style="width: 25rem;">
-                    <img src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F75%2F26%2F2d%2F75262df5859aaa32930b0245a87e75b9.jpg" class="card-img-top" alt="https://i.pinimg.com/originals/75/26/2d/75262df5859aaa32930b0245a87e75b9.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title">이름</h5>
-                        <p>Email: <span id="userEmail">example@example.com</span></p>
-                        <div id="userMessageContainer">
-                            <p id="userMessage">여기에 하고 싶은 말을 입력하세요.</p>
-                        </div>
-                    </div>
-                    <ul class="list-group list-group-flush" id="userMessageActions">
-                        <li class="list-group-item">
-                            <button type="button" class="btn btn-primary" id="editUserMessageButton">수정</button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal" style="margin-left:15px;">비밀번호 변경
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+      <div class="row">
+        <div class="col">
+          <div class="card" style="width: 25rem">
+            <img
+              src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F75%2F26%2F2d%2F75262df5859aaa32930b0245a87e75b9.jpg"
+              class="card-img-top"
+              alt="https://i.pinimg.com/originals/75/26/2d/75262df5859aaa32930b0245a87e75b9.jpg"
+            />
+            <div class="card-body">
+              <div id="userNameContainer">
+                <h5 class="card-title" id="userName">이름</h5>
+              </div>
+              <p>Email: <span id="userEmail">example@example.com</span></p>
+              <p>하고 싶은 말</p>
+              <div id="userMessageContainer">
+                <p id="userMessage"></p>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary" id="gohome" style="margin-top: 10px;">홈페이지</button>
+            <ul class="list-group list-group-flush" id="userMessageActions">
+              <li class="list-group-item">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="editUserMessageButton"
+                >
+                  수정
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#changePasswordModal"
+                  style="margin-left: 15px"
+                >
+                  비밀번호 변경
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="gohome"
+          style="margin-top: 10px"
+        >
+          홈페이지
+        </button>
+      </div>
     </div>
 
     <!-- 비밀번호 변경 모달 -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- 비밀번호 변경 폼 -->
-                    <form onsubmit="return validateForm()">
-                        <div class="form-group">
-                            <label for="currentPassword">현재 비밀번호</label>
-                            <input type="password" class="form-control" id="currentPassword" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">새로운 비밀번호</label>
-                            <input type="password" class="form-control" id="newPassword" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmNewPassword">새로운 비밀번호 확인</label>
-                            <input type="password" class="form-control" id="confirmNewPassword" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">비밀번호 변경</button>
-                    </form>
-                </div>
-            </div>
+    <div
+      class="modal fade"
+      id="changePasswordModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="changePasswordModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">
+              비밀번호 변경
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- 비밀번호 변경 폼 -->
+            <form onsubmit="return validateForm()">
+              <div class="form-group">
+                <label for="currentPassword">현재 비밀번호</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="currentPassword"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="newPassword">새로운 비밀번호</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="newPassword"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="confirmNewPassword">새로운 비밀번호 확인</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="confirmNewPassword"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                비밀번호 변경
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        // 홈페이지버튼
-        document.getElementById("gohome").addEventListener("click", function() {
-            location.href = "./login.html";
-        });
+      window.onload = function () {
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
 
-        $(document).ready(function() {
-            $('#changePasswordModal').on('hidden.bs.modal', function() {
-                $('#changePasswordForm')[0].reset();
-            });
-        });
-
-        //수정,저장 버튼
-        $(document).on('click', '#editUserMessageButton', function() {
-            // TEXTAREA만들기
-            var userMessageContainer = $("#userMessageContainer");
-            var userMessageText = userMessageContainer.text().trim();
-            var userMessageTextAreaHtml = '<textarea class="form-control" id="editedUserMessage" rows="3">' + userMessageText + '</textarea>';
-            userMessageContainer.html(userMessageTextAreaHtml);
-
-            var saveButtonHtml = '<button type="button" class="btn btn-success" id="saveUserMessageButton">저장</button>';
-            $('#editUserMessageButton').replaceWith(saveButtonHtml);
-        });
-
-        $(document).on('click', '#saveUserMessageButton', function() {
-            var editedUserMessage = $("#editedUserMessage").val();
-
-            var userMessageContainer = $("#userMessageContainer");
-            var userMessageContainerHtml = '<p id="userMessage">' + editedUserMessage + '</p>';
-            userMessageContainer.html(userMessageContainerHtml);
-
-            var editButtonHtml = '<button type="button" class="btn btn-primary" id="editUserMessageButton">수정</button>';
-            $('#saveUserMessageButton').replaceWith(editButtonHtml);
-        });
-
-        function validateForm() {
-            var newPassword = document.getElementById("newPassword").value;
-            var confirmNewPassword = document.getElementById("confirmNewPassword").value;
-
-            if (newPassword !== confirmNewPassword) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                return false;
-            } else {
-                alert("비밀번호가 변경되었습니다.");
-                return true;
+        console.log("accessToken:" + accessToken);
+        // 토큰이 존재하면 서버에 GET 요청 보내기
+        if (accessToken) {
+          fetch("http://localhost:3006/api/user/profile", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`
             }
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(getData => {
+              // 성공적으로 데이터를 받아왔을 때의 동작
+              $("#userName").text(getData.data.username);
+              $("#userMessage").text(getData.data.description);
+              $("#userEmail").text(getData.data.email);
+            })
+            .catch(error => {
+              // 오류 발생 시의 동작
+              console.error("에러 발생:", error);
+            });
+        } else {
+          console.log("토큰이 없습니다. 로그인이 필요합니다.");
         }
+      };
+
+      // 홈페이지버튼
+      document.getElementById("gohome").addEventListener("click", function () {
+        location.href = "./login.html";
+      });
+
+      $(document).ready(function () {
+        $("#changePasswordModal").on("hidden.bs.modal", function () {
+          $("#changePasswordForm")[0].reset();
+        });
+      });
+
+      //수정,저장 버튼
+      $(document).on("click", "#editUserMessageButton", function () {
+        // 이름 수정 edit 만들기
+        var userNameContainer = $("#userNameContainer");
+        var userNameText = userNameContainer.text().trim();
+        var userNameTextAreaHtml =
+          '<textarea class="form-control" id="editedUserName" rows="1">' +
+          userNameText +
+          "</textarea>";
+        userNameContainer.html(userNameTextAreaHtml);
+
+        // TEXTAREA만들기
+        var userMessageContainer = $("#userMessageContainer");
+        var userMessageText = userMessageContainer.text().trim();
+        var userMessageTextAreaHtml =
+          '<textarea class="form-control" id="editedUserMessage" rows="3">' +
+          userMessageText +
+          "</textarea>";
+        userMessageContainer.html(userMessageTextAreaHtml);
+
+        var saveButtonHtml =
+          '<button type="button" class="btn btn-success" id="saveUserMessageButton">저장</button>';
+        $("#editUserMessageButton").replaceWith(saveButtonHtml);
+      });
+
+      //저장 이벤트
+      $(document).on("click", "#saveUserMessageButton", function () {
+        const confirmSave = confirm("저장하시겠습니까?");
+
+        if (!confirmSave) return;
+
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
+        const name = $("#editedUserName").val();
+        const description = $("#editedUserMessage").val();
+
+        // 토큰이 존재하면 서버에 GET 요청 보내기
+        if (accessToken) {
+          fetch("http://localhost:3006/api/user/profile", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({ name, description })
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(getData => {
+              // 성공적으로 데이터를 받아왔을 때의 동작
+              alert("수정되었습니다.");
+              console.log("getData:" + getData);
+
+              var editedUserName = $("#editedUserName").val();
+              var editedUserMessage = $("#editedUserMessage").val();
+
+              var userNameContainer = $("#userNameContainer");
+              var userMessageContainer = $("#userMessageContainer");
+
+              var userNameContainerHtml =
+                '<h5 id="userName">' + editedUserName + "</h5>";
+
+              var userMessageContainerHtml =
+                '<p id="userMessage">' + editedUserMessage + "</p>";
+
+              userNameContainer.html(userNameContainerHtml);
+              userMessageContainer.html(userMessageContainerHtml);
+
+              var editButtonHtml =
+                '<button type="button" class="btn btn-primary" id="editUserMessageButton">수정</button>';
+              $("#saveUserMessageButton").replaceWith(editButtonHtml);
+
+              location.reload();
+            })
+            .catch(error => {
+              // 오류 발생 시의 동작
+              console.error("에러 발생:", error);
+            });
+        } else {
+          console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
+      });
+
+      function validateForm() {
+        var newPassword = document.getElementById("newPassword").value;
+        var confirmNewPassword =
+          document.getElementById("confirmNewPassword").value;
+
+        if (newPassword !== confirmNewPassword) {
+          alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+          return false;
+        } else {
+          alert("비밀번호가 변경되었습니다.");
+          return true;
+        }
+      }
     </script>
-
-</body>
-
+  </body>
 </html>

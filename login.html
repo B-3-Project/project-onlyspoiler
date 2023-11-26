@@ -256,6 +256,33 @@
             $('#registerButton').hide();
             $('#mypageButton').show();
             $('#writeButton').show();
+
+            //게시물 전체 조회
+            fetch("http://localhost:3006/api/contents", {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json"
+                }
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.json();
+                })
+                .then(getData => {
+                  // 성공적으로 데이터를 받아왔을 때의 동작
+                  getData.data.forEach(x=>{
+                    console.log(x);
+                    addButtonAndModal(x.title, x.content, x.id, x.author, "buttonContainer");
+
+                  });
+                })
+                .catch(error => {
+                  // 오류 발생 시의 동작
+                  console.error("에러 발생:", error);
+                });
+
         } else {
             $('#loginButton').show();
             $('#logoutButton').hide();
@@ -317,7 +344,8 @@
             localStorage.setItem('accessToken', responseData.data.accessToken);
             localStorage.setItem('refreshToken', responseData.data.refreshToken);
 
-            location.reload();
+            //location.reload();
+            location.href = "./mypage.html";
         } else {
             const errorData = await response.json();
             alert(`Error: ${errorData.error.message}`);
@@ -370,9 +398,50 @@
     });
 
     function submitPost() {
-        var postTitle = $('#content-title').val();
-        var postContent = $('#modalContent').val();
 
+        const confirmSave = confirm("등록하시겠습니까?");
+
+        if (!confirmSave) return;
+    
+        const title = document.querySelector('#content-title').value;
+        const content = document.querySelector('#modalContent').value;
+        
+    
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
+
+    
+        if (accessToken) {
+            //게시물 작성
+            fetch("http://localhost:3006/api/contents/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ title,content })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(getData => {
+                    // 성공적으로 데이터를 받아왔을 때의 동작
+                    alert(getData.message);
+    
+                    location.reload();
+                })
+                .catch(error => {
+                    // 오류 발생 시의 동작
+                    console.error("에러 발생:", error);
+                });
+        } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
+
+        /*
         if (postContent.trim() !== '') {
             var postId = "post" + new Date().getTime();
             var postTime = formatTime();
@@ -399,7 +468,7 @@
             $('#write').modal('hide');
         } else {
             alert("글 내용을 입력하세요.");
-        }
+        }*/
     }
 
     function addButtonAndModal(buttonText, modalContent, postId, username, newsFeedContainerId) {
@@ -462,6 +531,42 @@
         setTimeout(function () {
             var confirmDelete = confirm("포스트를 삭제하시겠습니까?");
             if (confirmDelete) {
+
+                // 토큰 가져오기
+                const accessToken = localStorage.getItem("accessToken");
+        
+                var editedContent = $("#editedContent_" + postId).val();
+        
+                if (accessToken) {
+                    //게시물 삭제
+                    fetch("http://localhost:3006/api/contents/"+postId, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify({ content:editedContent })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(getData => {
+                            // 성공적으로 데이터를 받아왔을 때의 동작
+                            alert(getData.message);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            // 오류 발생 시의 동작
+                            console.error("에러 발생:", error);
+                        });
+                } else {
+                    console.log("토큰이 없습니다. 로그인이 필요합니다.");
+                }
+
+                /*
                 // 버튼의 데이터 속성에서 게시물 ID를 가져옴
                 var postButton = $("#buttonContainer button[data-target='#" + modalId + "'][data-post-id='" + postId + "']");
                 var postButtonId = postButton.attr("data-post-id");
@@ -475,7 +580,9 @@
 
                 // 모달 및 버튼 삭제
                 $("#" + modalId).remove();
-                postButton.remove();
+                postButton.remove();*/
+
+
             }
         }, 150);
     }
@@ -494,16 +601,54 @@
     }
 
     function saveEditedContent(modalId, postId) {
+
+        const confirmSave = confirm("수정하시겠습니까?");
+
+        if (!confirmSave) return;
+
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
+
         var editedContent = $("#editedContent_" + postId).val();
 
-        // 수정된 내용을 원래 내용에 업데이트
-        var modalTextArea = $("#editedContent_" + postId);
-        var modalContentParagraphHtml = '<p id="modalContent_' + postId + '">' + editedContent + '</p>';
-        modalTextArea.replaceWith(modalContentParagraphHtml);
+        if (accessToken) {
+            //게시물 수정
+            fetch("http://localhost:3006/api/contents/"+postId, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ content:editedContent })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(getData => {
+                    // 성공적으로 데이터를 받아왔을 때의 동작
+                    alert(getData.message);
 
-        // "저장" 버튼을 다시 "수정" 버튼으로 변경
-        var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
-        $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);
+                    // 수정된 내용을 원래 내용에 업데이트
+                    var modalTextArea = $("#editedContent_" + postId);
+                    var modalContentParagraphHtml = '<p id="modalContent_' + postId + '">' + editedContent + '</p>';
+                    modalTextArea.replaceWith(modalContentParagraphHtml);
+            
+                    // "저장" 버튼을 다시 "수정" 버튼으로 변경
+                    var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
+                    $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);
+
+                    location.reload();
+                })
+                .catch(error => {
+                    // 오류 발생 시의 동작
+                    console.error("에러 발생:", error);
+                });
+        } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
     }
 
     function submitComment(postId) {
