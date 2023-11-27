@@ -308,6 +308,7 @@
       });
 
       function validateForm() {
+        var currentPassword = document.getElementById("currentPassword").value;
         var newPassword = document.getElementById("newPassword").value;
         var confirmNewPassword =
           document.getElementById("confirmNewPassword").value;
@@ -316,8 +317,45 @@
           alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
           return false;
         } else {
-          alert("비밀번호가 변경되었습니다.");
-          return true;
+          // 프로필 편집 비밀번호 변경
+
+          // 토큰 가져오기
+          const accessToken = localStorage.getItem("accessToken");
+
+          // 토큰이 존재하면 서버에 GET 요청 보내기
+          if (accessToken) {
+            fetch("http://localhost:3006/api/user/password", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`
+              },
+              body: JSON.stringify({ currentPassword, newPassword })
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw response.json().then(errorData => {
+                    alert(errorData.message);
+                  });
+                }
+                return response.json();
+              })
+              .then(getData => {
+                // 성공적으로 데이터를 받아왔을 때의 동작
+                alert(getData.message);
+                console.log("getData:" + getData);
+                $("#userName").text(getData.data.username);
+                $("#userMessage").text(getData.data.description);
+                $("#userEmail").text(getData.data.email);
+              })
+              .catch(error => {
+                // 오류 발생 시의 동작
+                console.error("에러 발생:", error);
+              });
+          } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+          }
+          alert("비밀번호 변경되었습니다");
         }
       }
     </script>
