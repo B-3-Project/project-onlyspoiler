@@ -186,7 +186,9 @@
           })
             .then(response => {
               if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw response.json().then(errorData => {
+                  alert(errorData.message);
+                });
               }
               return response.json();
             })
@@ -264,7 +266,9 @@
           })
             .then(response => {
               if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw response.json().then(errorData => {
+                  alert(errorData.message);
+                });
               }
               return response.json();
             })

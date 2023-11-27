@@ -266,7 +266,9 @@
               })
                 .then(response => {
                   if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw response.json().then(errorData => {
+                        alert(errorData.message);
+                    });
                   }
                   return response.json();
                 })
@@ -343,6 +345,8 @@
 
             localStorage.setItem('accessToken', responseData.data.accessToken);
             localStorage.setItem('refreshToken', responseData.data.refreshToken);
+
+            localStorage.setItem('userId', responseData.data.userId);
 
             //location.reload();
             location.href = "./mypage.html";
@@ -423,7 +427,9 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                        throw response.json().then(errorData => {
+                            alert(errorData.message);
+                        });
                     }
                     return response.json();
                 })
@@ -440,41 +446,18 @@
         } else {
             console.log("토큰이 없습니다. 로그인이 필요합니다.");
         }
-
-        /*
-        if (postContent.trim() !== '') {
-            var postId = "post" + new Date().getTime();
-            var postTime = formatTime();
-            var postHtml = '<p id="' + postId + '"><strong>' + postTitle + '</strong><br>' + postContent + '<br><em>작성 시간: ' + postTime + '</em></p>';
-
-            var postData = {
-                title: postTitle,
-                content: postContent,
-                id: postId,
-                username: "Username",
-                time: postTime
-            };
-
-            var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
-
-            existingPosts.push(postData);
-
-            localStorage.setItem('posts', JSON.stringify(existingPosts));
-
-            addButtonAndModal(postTitle, postContent, postId, "Username", "buttonContainer");
-
-            $('#content-title').val('');
-            $('#modalContent').val('');
-            $('#write').modal('hide');
-        } else {
-            alert("글 내용을 입력하세요.");
-        }*/
     }
 
     function addButtonAndModal(buttonText, modalContent, postId, username, newsFeedContainerId) {
         // 버튼과 모달을 위한 고유한 ID 생성
         var modalId = "modal" + new Date().getTime();
         var cardId = "card" + new Date().getTime();
+
+        // 댓글 목록
+        var modalComments ='';
+
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
 
         // 버튼 HTML 생성
         var buttonHtml =
@@ -487,6 +470,8 @@
             '       </div>' +
             '   </div>' +
             '</button>';
+
+        
 
         // 모달 HTML 생성
         var modalHtml =
@@ -511,7 +496,7 @@
             '               <div id="commentContainer_' + postId + '"></div>' +
             '           </div>' +
             '           <div class="modal-footer">' +
-            '               <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>' +
+            '               <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="exitModal()"(>닫기</button>' +
             '               <button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>' +
             '               <button type="button" class="btn btn-danger" onclick="deletePost(\'' + modalId + '\', \'' + postId + '\')">삭제</button>' +
             '           </div>' +
@@ -522,6 +507,50 @@
         //생성
         $("#" + newsFeedContainerId).prepend(buttonHtml);
         $("#modalContainer").append(modalHtml);
+
+
+        if (accessToken) {
+            //댓글 조회
+            fetch("http://localhost:3006/api/comments/"+postId, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response.json().then(errorData => {
+                            alert(errorData.message);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(getData => {
+                    // 성공적으로 데이터를 받아왔을 때의 동작
+                    console.log('getComment:'+getData);
+
+                    getData.data.forEach(x=>{
+                        console.log(x);
+
+                        modalComments +=
+                        '<div id="' + x.id + '" class="comment-container">' +
+                        '<p class="comment-text" style="margin-bottom: 0;">' + x.comments +
+                        '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + x.id + '">&times;</button>' +
+                        '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + x.id + '">Edit</button></p>' +
+                        '</div>';
+
+                      });
+
+                      $('#commentContainer_' + postId).append(modalComments);
+                    })
+                .catch(error => {
+                    // 오류 발생 시의 동작
+                    console.error("에러 발생:", error);
+                    });
+        } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
     }
 
     function deletePost(modalId, postId) {
@@ -549,7 +578,9 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
+                                throw response.json().then(errorData => {
+                                    alert(errorData.message);
+                                });
                             }
                             return response.json();
                         })
@@ -565,24 +596,6 @@
                 } else {
                     console.log("토큰이 없습니다. 로그인이 필요합니다.");
                 }
-
-                /*
-                // 버튼의 데이터 속성에서 게시물 ID를 가져옴
-                var postButton = $("#buttonContainer button[data-target='#" + modalId + "'][data-post-id='" + postId + "']");
-                var postButtonId = postButton.attr("data-post-id");
-
-                // localStorage에서 게시물 삭제
-                var existingPosts = JSON.parse(localStorage.getItem('posts')) || [];
-                var updatedPosts = existingPosts.filter(function (post) {
-                    return post.id !== postButtonId;
-                });
-                localStorage.setItem('posts', JSON.stringify(updatedPosts));
-
-                // 모달 및 버튼 삭제
-                $("#" + modalId).remove();
-                postButton.remove();*/
-
-
             }
         }, 150);
     }
@@ -595,9 +608,14 @@
         var modalTextAreaHtml = '<textarea class="form-control" id="editedContent_' + postId + '" rows="3">' + modalContent + '</textarea>';
         modalContentParagraph.replaceWith(modalTextAreaHtml);
 
+        
         // "수정" 버튼 대신 "저장" 버튼 생성
         var saveButtonHtml = '<button type="button" class="btn btn-success" onclick="saveEditedContent(\'' + modalId + '\', \'' + postId + '\')">저장</button>';
         $("#" + modalId + " .modal-footer").find('.btn-warning').replaceWith(saveButtonHtml);
+        /*
+        // "저장" 버튼을 다시 "수정" 버튼으로 변경
+        var editButtonHtml = '<button type="button" class="btn btn-warning" onclick="editPostAndSaveButton(\'' + modalId + '\', \'' + postId + '\')">수정</button>';
+        $("#" + modalId + " .modal-footer").find('.btn-success').replaceWith(editButtonHtml);*/
     }
 
     function saveEditedContent(modalId, postId) {
@@ -623,7 +641,9 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                        throw response.json().then(errorData => {
+                            alert(errorData.message);
+                        });
                     }
                     return response.json();
                 })
@@ -653,27 +673,116 @@
 
     function submitComment(postId) {
         var comment = $('#comment_' + postId).val().trim();
+
         if (comment === '') {
             alert("댓글 내용을 입력하세요.");
             return;
         }
 
-        var commentId = 'comment_' + postId + '_' + Date.now();
-        var commentHtml =
-            '<div id="' + commentId + '" class="comment-container">' +
-            '<p class="comment-text" style="margin-bottom: 0;">' + comment +
-            '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
-            '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
-            '</div>';
+        const confirmSave = confirm("댓글 등록하시겠습니까?");
 
-        $('#commentContainer_' + postId).append(commentHtml);
-        $('#comment_' + postId).val('');
+        if (!confirmSave) return;
+
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
+
+        // 사용자 id 가져오기
+        const userId = localStorage.getItem("userId");
+
+
+        if (accessToken) {
+            //댓글 등록
+            fetch("http://localhost:3006/api/comments/"+postId, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ comments:comment })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response.json().then(errorData => {
+                            alert(errorData.message);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(getData => {
+                    // 성공적으로 데이터를 받아왔을 때의 동작
+                    alert(getData.message);
+
+                    var commentHtml =
+                    '<div id="' + getData.data.id + '" class="comment-container">' +
+                    '<p class="comment-text" style="margin-bottom: 0;">' + comment +
+                    '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + getData.data.id + '">&times;</button>' +
+                    '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + getData.data.id + '">Edit</button></p>' +
+                    '</div>';
+                    $('#commentContainer_' + postId).prepend(commentHtml);
+                    $('#comment_' + postId).val('');
+
+
+
+                })
+                .catch(error => {
+                    // 오류 발생 시의 동작
+                    console.error("에러 발생:", error);
+                });
+        } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
+    }
+
+    function exitModal() {
+
+        location.reload();
+
     }
 
     $('#modalContainer').on('click', '.delete-comment', function () {
         var postId = $(this).data('post-id');
         var commentId = $(this).data('comment-id');
-        $('#' + commentId).remove();
+
+        const confirmSave = confirm("댓글 삭제하시겠습니까?");
+
+        if (!confirmSave) return;
+
+        // 토큰 가져오기
+        const accessToken = localStorage.getItem("accessToken");
+
+        // 사용자 id 가져오기
+        const userId = localStorage.getItem("userId");
+
+        if (accessToken) {
+            //댓글 삭제
+            fetch("http://localhost:3006/api/comments/"+postId+"/"+commentId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`
+                }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response.json().then(errorData => {
+                            alert(errorData.message);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(getData => {
+                    // 성공적으로 데이터를 받아왔을 때의 동작
+                    alert(getData.message);
+                    $('#' + commentId).remove();
+                })
+                .catch(error => {
+                    // 오류 발생 시의 동작
+                    console.error("에러 발생:", error);
+                });
+        } else {
+            console.log("토큰이 없습니다. 로그인이 필요합니다.");
+        }
+
     });
 
     $('#modalContainer').on('click', '.edit-comment', function () {
@@ -685,13 +794,54 @@
         var editedComment = prompt('Edit your comment:', currentComment);
 
         if (editedComment !== null) {
-            var editedCommentHtml =
-                '<div id="' + commentId + '" class="comment-container">' +
-                '<p class="comment-text" style="margin-bottom: 0;">' + editedComment +
-                '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
-                '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
-                '</div>';
-            currentCommentContainer.html(editedCommentHtml);
+
+            // 토큰 가져오기
+            const accessToken = localStorage.getItem("accessToken");
+
+            // 사용자 id 가져오기
+            const userId = localStorage.getItem("userId");
+
+
+            if (accessToken) {
+                //댓글 수정
+                fetch("http://localhost:3006/api/comments/"+postId+"/"+commentId, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ comments:editedComment })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw response.json().then(errorData => {
+                                alert(errorData.message);
+                            });
+
+                        }
+                        return response.json();
+                    })
+                    .then(getData => {
+                        // 성공적으로 데이터를 받아왔을 때의 동작
+                        alert(getData.message);
+
+                        var editedCommentHtml =
+                        '<div id="' + commentId + '" class="comment-container">' +
+                        '<p class="comment-text" style="margin-bottom: 0;">' + editedComment +
+                        '<button type="button" class="btn btn-danger btn-sm ml-2 delete-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">&times;</button>' +
+                        '<button type="button" class="btn btn-info btn-sm ml-2 edit-comment" data-post-id="' + postId + '" data-comment-id="' + commentId + '">Edit</button></p>' +
+                        '</div>';
+                        currentCommentContainer.html(editedCommentHtml);
+
+                    })
+                    .catch(error => {
+                        // 오류 발생 시의 동작
+                        console.error("에러 발생:", error);
+                    });
+            } else {
+                console.log("토큰이 없습니다. 로그인이 필요합니다.");
+            }
+
         }
     });
 </script>
